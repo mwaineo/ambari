@@ -21,97 +21,51 @@ from mock.mock import MagicMock, patch
 from stacks.utils.RMFTestCase import *
 
 @patch("os.path.exists", new = MagicMock(return_value=True))
-class TestAccumuloMaster(RMFTestCase):
+class TestAccumuloRegionServer(RMFTestCase):
   def test_configure_default(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_master.py",
-                   classname = "AccumuloMaster",
+    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_tabletserver.py",
+                   classname = "AccumuloRegionServer",
                    command = "configure",
                    config_file="default.json"
     )
     
     self.assert_configure_default()
     self.assertNoMoreResources()
-
+    
   def test_start_default(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_master.py",
-                   classname = "AccumuloMaster",
+    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_tabletserver.py",
+                   classname = "AccumuloRegionServer",
                    command = "start",
                    config_file="default.json"
     )
     
     self.assert_configure_default()
-    self.assertResourceCalled('Execute', '/usr/lib/accumulo/bin/accumulo-daemon.sh --config /etc/accumulo/conf start master',
-      not_if = 'ls /var/run/accumulo/accumulo-accumulo-master.pid >/dev/null 2>&1 && ps `cat /var/run/accumulo/accumulo-accumulo-master.pid` >/dev/null 2>&1',
+    self.assertResourceCalled('Execute', '/usr/lib/accumulo/bin/accumulo-daemon.sh --config /etc/accumulo/conf start tabletserver',
+      not_if = 'ls /var/run/accumulo/accumulo-accumulo-tabletserver.pid >/dev/null 2>&1 && ps `cat /var/run/accumulo/accumulo-accumulo-tabletserver.pid` >/dev/null 2>&1',
       user = 'accumulo'
     )
     self.assertNoMoreResources()
     
   def test_stop_default(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_master.py",
-                   classname = "AccumuloMaster",
+    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_tabletserver.py",
+                   classname = "AccumuloRegionServer",
                    command = "stop",
                    config_file="default.json"
     )
     
-    self.assertResourceCalled('Execute', '/usr/lib/accumulo/bin/accumulo-daemon.sh --config /etc/accumulo/conf stop master',
+    self.assertResourceCalled('Execute', '/usr/lib/accumulo/bin/accumulo-daemon.sh --config /etc/accumulo/conf stop tabletserver',
       user = 'accumulo',
-      on_timeout = 'ls /var/run/accumulo/accumulo-accumulo-master.pid >/dev/null 2>&1 && ps `cat /var/run/accumulo/accumulo-accumulo-master.pid` >/dev/null 2>&1 && kill -9 `cat /var/run/accumulo/accumulo-accumulo-master.pid`', 
+      on_timeout = 'ls /var/run/accumulo/accumulo-accumulo-tabletserver.pid >/dev/null 2>&1 && ps `cat /var/run/accumulo/accumulo-accumulo-tabletserver.pid` >/dev/null 2>&1 && kill -9 `cat /var/run/accumulo/accumulo-accumulo-tabletserver.pid`', 
       timeout = 30,
     )
     
-    self.assertResourceCalled('Execute', 'rm -f /var/run/accumulo/accumulo-accumulo-master.pid',
+    self.assertResourceCalled('Execute', 'rm -f /var/run/accumulo/accumulo-accumulo-tabletserver.pid',
     )
     self.assertNoMoreResources()
-
-  def test_decom_default(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_master.py",
-                       classname = "AccumuloMaster",
-                       command = "decommission",
-                       config_file="default.json"
-    )
-
-    self.assertResourceCalled('File', '/usr/lib/accumulo/bin/draining_servers.rb',
-                              content = StaticFile('draining_servers.rb'),
-                              mode = 0755,
-                              )
-    self.assertResourceCalled('Execute', ' /usr/lib/accumulo/bin/accumulo --config /etc/accumulo/conf org.jruby.Main /usr/lib/accumulo/bin/draining_servers.rb add host1',
-                              logoutput = True,
-                              user = 'accumulo',
-                              )
-    self.assertResourceCalled('Execute', ' /usr/lib/accumulo/bin/accumulo --config /etc/accumulo/conf org.jruby.Main /usr/lib/accumulo/bin/region_mover.rb unload host1',
-                              logoutput = True,
-                              user = 'accumulo',
-                              )
-    self.assertResourceCalled('Execute', ' /usr/lib/accumulo/bin/accumulo --config /etc/accumulo/conf org.jruby.Main /usr/lib/accumulo/bin/draining_servers.rb add host2',
-                              logoutput = True,
-                              user = 'accumulo',
-                              )
-    self.assertResourceCalled('Execute', ' /usr/lib/accumulo/bin/accumulo --config /etc/accumulo/conf org.jruby.Main /usr/lib/accumulo/bin/region_mover.rb unload host2',
-                              logoutput = True,
-                              user = 'accumulo',
-                              )
-    self.assertNoMoreResources()
-
-  def test_decom_default_draining_only(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_master.py",
-                       classname = "AccumuloMaster",
-                       command = "decommission",
-                       config_file="default.accumulodecom.json"
-    )
-
-    self.assertResourceCalled('File', '/usr/lib/accumulo/bin/draining_servers.rb',
-                              content = StaticFile('draining_servers.rb'),
-                              mode = 0755,
-                              )
-    self.assertResourceCalled('Execute', ' /usr/lib/accumulo/bin/accumulo --config /etc/accumulo/conf org.jruby.Main /usr/lib/accumulo/bin/draining_servers.rb remove host1',
-                              logoutput = True,
-                              user = 'accumulo',
-                              )
-    self.assertNoMoreResources()
-
+    
   def test_configure_secured(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_master.py",
-                   classname = "AccumuloMaster",
+    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_tabletserver.py",
+                   classname = "AccumuloRegionServer",
                    command = "configure",
                    config_file="secured.json"
     )
@@ -120,55 +74,34 @@ class TestAccumuloMaster(RMFTestCase):
     self.assertNoMoreResources()
     
   def test_start_secured(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_master.py",
-                   classname = "AccumuloMaster",
+    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_tabletserver.py",
+                   classname = "AccumuloRegionServer",
                    command = "start",
                    config_file="secured.json"
     )
     
     self.assert_configure_secured()
-    self.assertResourceCalled('Execute', '/usr/lib/accumulo/bin/accumulo-daemon.sh --config /etc/accumulo/conf start master',
-      not_if = 'ls /var/run/accumulo/accumulo-accumulo-master.pid >/dev/null 2>&1 && ps `cat /var/run/accumulo/accumulo-accumulo-master.pid` >/dev/null 2>&1',
+    self.assertResourceCalled('Execute', '/usr/lib/accumulo/bin/accumulo-daemon.sh --config /etc/accumulo/conf start tabletserver',
+      not_if = 'ls /var/run/accumulo/accumulo-accumulo-tabletserver.pid >/dev/null 2>&1 && ps `cat /var/run/accumulo/accumulo-accumulo-tabletserver.pid` >/dev/null 2>&1',
       user = 'accumulo',
     )
     self.assertNoMoreResources()
     
   def test_stop_secured(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_master.py",
-                   classname = "AccumuloMaster",
+    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_tabletserver.py",
+                   classname = "AccumuloRegionServer",
                    command = "stop",
                    config_file="secured.json"
     )
 
-    self.assertResourceCalled('Execute', '/usr/lib/accumulo/bin/accumulo-daemon.sh --config /etc/accumulo/conf stop master',
+    self.assertResourceCalled('Execute', '/usr/lib/accumulo/bin/accumulo-daemon.sh --config /etc/accumulo/conf stop tabletserver',
       user = 'accumulo',
-      on_timeout = 'ls /var/run/accumulo/accumulo-accumulo-master.pid >/dev/null 2>&1 && ps `cat /var/run/accumulo/accumulo-accumulo-master.pid` >/dev/null 2>&1 && kill -9 `cat /var/run/accumulo/accumulo-accumulo-master.pid`', 
+      on_timeout = 'ls /var/run/accumulo/accumulo-accumulo-tabletserver.pid >/dev/null 2>&1 && ps `cat /var/run/accumulo/accumulo-accumulo-tabletserver.pid` >/dev/null 2>&1 && kill -9 `cat /var/run/accumulo/accumulo-accumulo-tabletserver.pid`', 
       timeout = 30,
     )
     
-    self.assertResourceCalled('Execute', 'rm -f /var/run/accumulo/accumulo-accumulo-master.pid',
+    self.assertResourceCalled('Execute', 'rm -f /var/run/accumulo/accumulo-accumulo-tabletserver.pid',
     )
-    self.assertNoMoreResources()
-
-  def test_decom_secure(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_master.py",
-                       classname = "AccumuloMaster",
-                       command = "decommission",
-                       config_file="secured.json"
-    )
-
-    self.assertResourceCalled('File', '/usr/lib/accumulo/bin/draining_servers.rb',
-                              content = StaticFile('draining_servers.rb'),
-                              mode = 0755,
-                              )
-    self.assertResourceCalled('Execute', '/usr/bin/kinit -kt /etc/security/keytabs/accumulo.headless.keytab accumulo; /usr/lib/accumulo/bin/accumulo --config /etc/accumulo/conf org.jruby.Main /usr/lib/accumulo/bin/draining_servers.rb add host1',
-                              logoutput = True,
-                              user = 'accumulo',
-                              )
-    self.assertResourceCalled('Execute', '/usr/bin/kinit -kt /etc/security/keytabs/accumulo.headless.keytab accumulo; /usr/lib/accumulo/bin/accumulo --config /etc/accumulo/conf org.jruby.Main /usr/lib/accumulo/bin/region_mover.rb unload host1',
-                              logoutput = True,
-                              user = 'accumulo',
-                              )
     self.assertNoMoreResources()
 
   def assert_configure_default(self):
@@ -202,11 +135,11 @@ class TestAccumuloMaster(RMFTestCase):
       configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
     )
     self.assertResourceCalled('XmlConfig', 'hdfs-site.xml',
-                              owner = 'hdfs',
-                              group = 'hadoop',
-                              conf_dir = '/etc/hadoop/conf',
-                              configurations = self.getConfig()['configurations']['hdfs-site'],
-                              configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
+      owner = 'hdfs',
+      group = 'hadoop',
+      conf_dir = '/etc/hadoop/conf',
+      configurations = self.getConfig()['configurations']['hdfs-site'],
+      configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
     )
     self.assertResourceCalled('File', '/etc/accumulo/conf/accumulo-policy.xml',
       owner = 'accumulo',
@@ -218,9 +151,9 @@ class TestAccumuloMaster(RMFTestCase):
     )
     self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/hadoop-metrics2-accumulo.properties',
       owner = 'accumulo',
-      template_tag = 'GANGLIA-MASTER',
+      template_tag = 'GANGLIA-RS',
     )
-    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/regionservers',
+    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/tabletservers',
       owner = 'accumulo',
       template_tag = None,
     )
@@ -244,7 +177,7 @@ class TestAccumuloMaster(RMFTestCase):
                               keytab = UnknownConfigurationMock(),
                               conf_dir = '/etc/hadoop/conf',
                               hdfs_user = 'hdfs',
-                              kinit_path_local = "/usr/bin/kinit",
+                              kinit_path_local = '/usr/bin/kinit',
                               owner = 'accumulo',
                               bin_dir = '/usr/bin',
                               action = ['create_delayed'],
@@ -254,7 +187,7 @@ class TestAccumuloMaster(RMFTestCase):
                               keytab = UnknownConfigurationMock(),
                               conf_dir = '/etc/hadoop/conf',
                               hdfs_user = 'hdfs',
-                              kinit_path_local = "/usr/bin/kinit",
+                              kinit_path_local = '/usr/bin/kinit',
                               mode = 0711,
                               owner = 'accumulo',
                               bin_dir = '/usr/bin',
@@ -265,7 +198,7 @@ class TestAccumuloMaster(RMFTestCase):
                               keytab = UnknownConfigurationMock(),
                               conf_dir = '/etc/hadoop/conf',
                               hdfs_user = 'hdfs',
-                              kinit_path_local = "/usr/bin/kinit",
+                              kinit_path_local = '/usr/bin/kinit',
                               bin_dir = '/usr/bin',
                               action = ['create'],
                               )
@@ -317,13 +250,13 @@ class TestAccumuloMaster(RMFTestCase):
     )
     self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/hadoop-metrics2-accumulo.properties',
       owner = 'accumulo',
-      template_tag = 'GANGLIA-MASTER',
+      template_tag = 'GANGLIA-RS',
     )
-    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/regionservers',
+    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/tabletservers',
       owner = 'accumulo',
       template_tag = None,
     )
-    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/accumulo_master_jaas.conf',
+    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/accumulo_tabletserver_jaas.conf',
       owner = 'accumulo',
       template_tag = None,
     )

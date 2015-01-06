@@ -26,26 +26,26 @@ import  resource_management.libraries.functions
 class TestServiceCheck(RMFTestCase):
 
   def test_service_check_default(self):
-    self.executeScript("2.0.6/services/HBASE/package/scripts/service_check.py",
-                        classname="HbaseServiceCheck",
+    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/service_check.py",
+                        classname="AccumuloServiceCheck",
                         command="service_check",
                         config_file="default.json"
     )
-    self.assertResourceCalled('File', '/tmp/hbaseSmokeVerify.sh',
-      content = StaticFile('hbaseSmokeVerify.sh'),
+    self.assertResourceCalled('File', '/tmp/accumuloSmokeVerify.sh',
+      content = StaticFile('accumuloSmokeVerify.sh'),
       mode = 0755,
     )
-    self.assertResourceCalled('File', '/tmp/hbase-smoke.sh',
-      content = Template('hbase-smoke.sh.j2'),
+    self.assertResourceCalled('File', '/tmp/accumulo-smoke.sh',
+      content = Template('accumulo-smoke.sh.j2'),
       mode = 0755,
     )
-    self.assertResourceCalled('Execute', ' /usr/lib/hbase/bin/hbase --config /etc/hbase/conf shell /tmp/hbase-smoke.sh',
+    self.assertResourceCalled('Execute', ' /usr/lib/accumulo/bin/accumulo --config /etc/accumulo/conf shell /tmp/accumulo-smoke.sh',
       logoutput = True,
       tries = 3,
       user = 'ambari-qa',
       try_sleep = 5,
     )
-    self.assertResourceCalled('Execute', ' /tmp/hbaseSmokeVerify.sh /etc/hbase/conf  /usr/lib/hbase/bin/hbase',
+    self.assertResourceCalled('Execute', ' /tmp/accumuloSmokeVerify.sh /etc/accumulo/conf  /usr/lib/accumulo/bin/accumulo',
       logoutput = True,
       tries = 3,
       user = 'ambari-qa',
@@ -55,35 +55,35 @@ class TestServiceCheck(RMFTestCase):
     
     
   def test_service_check_secured(self):
-    self.executeScript("2.0.6/services/HBASE/package/scripts/service_check.py",
-                        classname="HbaseServiceCheck",
+    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/service_check.py",
+                        classname="AccumuloServiceCheck",
                         command="service_check",
                         config_file="secured.json"
     )
-    self.assertResourceCalled('File', '/tmp/hbaseSmokeVerify.sh',
-      content = StaticFile('hbaseSmokeVerify.sh'),
+    self.assertResourceCalled('File', '/tmp/accumuloSmokeVerify.sh',
+      content = StaticFile('accumuloSmokeVerify.sh'),
       mode = 0755,
     )
-    self.assertResourceCalled('File', '/tmp/hbase-smoke.sh',
-      content = Template('hbase-smoke.sh.j2'),
+    self.assertResourceCalled('File', '/tmp/accumulo-smoke.sh',
+      content = Template('accumulo-smoke.sh.j2'),
       mode = 0755,
     )
-    self.assertResourceCalled('File', '/tmp/hbase_grant_permissions.sh',
-      content = Template('hbase_grant_permissions.j2'),
-      owner = 'hbase',
+    self.assertResourceCalled('File', '/tmp/accumulo_grant_permissions.sh',
+      content = Template('accumulo_grant_permissions.j2'),
+      owner = 'accumulo',
       group = 'hadoop',
       mode = 0644,
     )
-    self.assertResourceCalled('Execute', '/usr/bin/kinit -kt /etc/security/keytabs/hbase.headless.keytab hbase; /usr/lib/hbase/bin/hbase shell /tmp/hbase_grant_permissions.sh',
-      user = 'hbase',
+    self.assertResourceCalled('Execute', '/usr/bin/kinit -kt /etc/security/keytabs/accumulo.headless.keytab accumulo; /usr/lib/accumulo/bin/accumulo shell /tmp/accumulo_grant_permissions.sh',
+      user = 'accumulo',
     )
-    self.assertResourceCalled('Execute', '/usr/bin/kinit -kt /etc/security/keytabs/smokeuser.headless.keytab ambari-qa; /usr/lib/hbase/bin/hbase --config /etc/hbase/conf shell /tmp/hbase-smoke.sh',
+    self.assertResourceCalled('Execute', '/usr/bin/kinit -kt /etc/security/keytabs/smokeuser.headless.keytab ambari-qa; /usr/lib/accumulo/bin/accumulo --config /etc/accumulo/conf shell /tmp/accumulo-smoke.sh',
       logoutput = True,
       tries = 3,
       user = 'ambari-qa',
       try_sleep = 5,
     )
-    self.assertResourceCalled('Execute', '/usr/bin/kinit -kt /etc/security/keytabs/smokeuser.headless.keytab ambari-qa; /tmp/hbaseSmokeVerify.sh /etc/hbase/conf  /usr/lib/hbase/bin/hbase',
+    self.assertResourceCalled('Execute', '/usr/bin/kinit -kt /etc/security/keytabs/smokeuser.headless.keytab ambari-qa; /tmp/accumuloSmokeVerify.sh /etc/accumulo/conf  /usr/lib/accumulo/bin/accumulo',
       logoutput = True,
       tries = 3,
       user = 'ambari-qa',

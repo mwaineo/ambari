@@ -21,41 +21,41 @@ from mock.mock import MagicMock, call, patch
 from stacks.utils.RMFTestCase import *
 
 @patch("os.path.exists", new = MagicMock(return_value=True))
-class TestHBaseClient(RMFTestCase):
+class TestAccumuloClient(RMFTestCase):
   
   def test_configure_secured(self):
-    self.executeScript("2.0.6/services/HBASE/package/scripts/hbase_client.py",
-                   classname = "HbaseClient",
+    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_client.py",
+                   classname = "AccumuloClient",
                    command = "configure",
                    config_file="secured.json"
     )
 
-    self.assertResourceCalled('Directory', '/etc/hbase/conf',
-      owner = 'hbase',
+    self.assertResourceCalled('Directory', '/etc/accumulo/conf',
+      owner = 'accumulo',
       group = 'hadoop',
       recursive = True,
     )
-    self.assertResourceCalled('Directory', '/hadoop/hbase',
-      owner = 'hbase',
+    self.assertResourceCalled('Directory', '/hadoop/accumulo',
+      owner = 'accumulo',
       recursive = True,
     )
-    self.assertResourceCalled('Directory', '/hadoop/hbase/local/jars',
-      owner = 'hbase',
+    self.assertResourceCalled('Directory', '/hadoop/accumulo/local/jars',
+      owner = 'accumulo',
       group = 'hadoop',
       mode=0775,
       recursive = True,
     )
-    self.assertResourceCalled('XmlConfig', 'hbase-site.xml',
-      owner = 'hbase',
+    self.assertResourceCalled('XmlConfig', 'accumulo-site.xml',
+      owner = 'accumulo',
       group = 'hadoop',
-      conf_dir = '/etc/hbase/conf',
-      configurations = self.getConfig()['configurations']['hbase-site'],
-      configuration_attributes = self.getConfig()['configuration_attributes']['hbase-site']
+      conf_dir = '/etc/accumulo/conf',
+      configurations = self.getConfig()['configurations']['accumulo-site'],
+      configuration_attributes = self.getConfig()['configuration_attributes']['accumulo-site']
     )
     self.assertResourceCalled('XmlConfig', 'hdfs-site.xml',
-      owner = 'hbase',
+      owner = 'accumulo',
       group = 'hadoop',
-      conf_dir = '/etc/hbase/conf',
+      conf_dir = '/etc/accumulo/conf',
       configurations = self.getConfig()['configurations']['hdfs-site'],
       configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
     )
@@ -66,68 +66,68 @@ class TestHBaseClient(RMFTestCase):
       configurations = self.getConfig()['configurations']['hdfs-site'],
       configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
     )
-    self.assertResourceCalled('File', '/etc/hbase/conf/hbase-policy.xml',
-      owner = 'hbase',
+    self.assertResourceCalled('File', '/etc/accumulo/conf/accumulo-policy.xml',
+      owner = 'accumulo',
       group = 'hadoop',
     )
-    self.assertResourceCalled('File', '/etc/hbase/conf/hbase-env.sh',
-        content = InlineTemplate(self.getConfig()['configurations']['hbase-env']['content']),
-        owner = 'hbase',
+    self.assertResourceCalled('File', '/etc/accumulo/conf/accumulo-env.sh',
+        content = InlineTemplate(self.getConfig()['configurations']['accumulo-env']['content']),
+        owner = 'accumulo',
     )
-    self.assertResourceCalled('TemplateConfig', '/etc/hbase/conf/hadoop-metrics2-hbase.properties',
-      owner = 'hbase',
+    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/hadoop-metrics2-accumulo.properties',
+      owner = 'accumulo',
       template_tag = 'GANGLIA-RS',
     )
-    self.assertResourceCalled('TemplateConfig', '/etc/hbase/conf/regionservers',
-      owner = 'hbase',
+    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/regionservers',
+      owner = 'accumulo',
       template_tag = None,
     )
-    self.assertResourceCalled('TemplateConfig', '/etc/hbase/conf/hbase_client_jaas.conf',
-      owner = 'hbase',
+    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/accumulo_client_jaas.conf',
+      owner = 'accumulo',
       template_tag = None,
     )
     self.assertResourceCalled('File',
-                              '/etc/hbase/conf/log4j.properties',
+                              '/etc/accumulo/conf/log4j.properties',
                               mode=0644,
                               group='hadoop',
-                              owner='hbase',
+                              owner='accumulo',
                               content='log4jproperties\nline2'
     )
     self.assertNoMoreResources()
     
   def test_configure_default(self):
-    self.executeScript("2.0.6/services/HBASE/package/scripts/hbase_client.py",
-                   classname = "HbaseClient",
+    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_client.py",
+                   classname = "AccumuloClient",
                    command = "configure",
                    config_file="default.json"
     )
     
-    self.assertResourceCalled('Directory', '/etc/hbase/conf',
-      owner = 'hbase',
+    self.assertResourceCalled('Directory', '/etc/accumulo/conf',
+      owner = 'accumulo',
       group = 'hadoop',
       recursive = True,
     )
-    self.assertResourceCalled('Directory', '/hadoop/hbase',
-      owner = 'hbase',
+    self.assertResourceCalled('Directory', '/hadoop/accumulo',
+      owner = 'accumulo',
       recursive = True,
     )
-    self.assertResourceCalled('Directory', '/hadoop/hbase/local/jars',
-      owner = 'hbase',
+    self.assertResourceCalled('Directory', '/hadoop/accumulo/local/jars',
+      owner = 'accumulo',
       group = 'hadoop',
       mode=0775,
       recursive = True,
     )
-    self.assertResourceCalled('XmlConfig', 'hbase-site.xml',
-      owner = 'hbase',
+    self.assertResourceCalled('XmlConfig', 'accumulo-site.xml',
+      owner = 'accumulo',
       group = 'hadoop',
-      conf_dir = '/etc/hbase/conf',
-      configurations = self.getConfig()['configurations']['hbase-site'],
-      configuration_attributes = self.getConfig()['configuration_attributes']['hbase-site']
+      conf_dir = '/etc/accumulo/conf',
+      configurations = self.getConfig()['configurations']['accumulo-site'],
+      configuration_attributes = self.getConfig()['configuration_attributes']['accumulo-site']
     )
     self.assertResourceCalled('XmlConfig', 'hdfs-site.xml',
-      owner = 'hbase',
+      owner = 'accumulo',
       group = 'hadoop',
-      conf_dir = '/etc/hbase/conf',
+      conf_dir = '/etc/accumulo/conf',
       configurations = self.getConfig()['configurations']['hdfs-site'],
       configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
     )
@@ -138,27 +138,27 @@ class TestHBaseClient(RMFTestCase):
       configurations = self.getConfig()['configurations']['hdfs-site'],
       configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
     )
-    self.assertResourceCalled('File', '/etc/hbase/conf/hbase-policy.xml',
-      owner = 'hbase',
+    self.assertResourceCalled('File', '/etc/accumulo/conf/accumulo-policy.xml',
+      owner = 'accumulo',
       group = 'hadoop',
     )
-    self.assertResourceCalled('File', '/etc/hbase/conf/hbase-env.sh',
-        content = InlineTemplate(self.getConfig()['configurations']['hbase-env']['content']),
-        owner = 'hbase',
+    self.assertResourceCalled('File', '/etc/accumulo/conf/accumulo-env.sh',
+        content = InlineTemplate(self.getConfig()['configurations']['accumulo-env']['content']),
+        owner = 'accumulo',
     )
-    self.assertResourceCalled('TemplateConfig', '/etc/hbase/conf/hadoop-metrics2-hbase.properties',
-      owner = 'hbase',
+    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/hadoop-metrics2-accumulo.properties',
+      owner = 'accumulo',
       template_tag = 'GANGLIA-RS',
     )
-    self.assertResourceCalled('TemplateConfig', '/etc/hbase/conf/regionservers',
-      owner = 'hbase',
+    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/regionservers',
+      owner = 'accumulo',
       template_tag = None,
     )
     self.assertResourceCalled('File',
-                              '/etc/hbase/conf/log4j.properties',
+                              '/etc/accumulo/conf/log4j.properties',
                               mode=0644,
                               group='hadoop',
-                              owner='hbase',
+                              owner='accumulo',
                               content='log4jproperties\nline2'
     )
     self.assertNoMoreResources()
