@@ -23,7 +23,7 @@ from resource_management import *
 
 from accumulo import accumulo
          
-class AccumuloMaster(Script):
+class AccumuloTServer(Script):
   def install(self, env):
     self.install_packages(env)
     self.configure(env)
@@ -32,34 +32,19 @@ class AccumuloMaster(Script):
     import params
     env.set_params(params)
     
-    accumulo(name='master')
-
-    try:
-      Execute( format("{daemon_script} init --instance-name {accumulo_instance_name} --password {accumulo_root_password} --clear-instance-name >{log_dir}/accumulo-{accumulo_user}-init.out 2>{log_dir}/accumulo-{accumulo_user}-init.err"),
-             not_if=format("{hadoop_prefix}/bin/hadoop fs -stat {accumulo_hdfs_root_dir}"),
-             user=params.accumulo_user)
-    except Exception, e:
-      try:
-        Execute( format("{hadoop_prefix}/bin/hadoop fs -rm -R {accumulo_hdfs_root_dir}"),
-             user=params.accumulo_user)
-      except:
-        pass
-      raise e
+    accumulo(name='tserver')
 
   def start(self, env):
       import params
       env.set_params(params)
       self.configure(env)
       
-      Execute(format("{daemon_script} {params.hostname} master"),
+      Execute(format("{daemon_script_start} tserver"),
              user=params.accumulo_user
       )
-      Execute(format("{daemon_script} {params.hostname} monitor"),
+      Execute(format("{daemon_script_start} tracer"),
              user=params.accumulo_user
-      )
-      Execute(format("{daemon_script} {params.hostname} gc"),
-             user=params.accumulo_user
-      )
+      )      
       
   def stop(self, env):
       import params

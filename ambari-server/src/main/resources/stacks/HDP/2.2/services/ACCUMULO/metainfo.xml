@@ -67,8 +67,8 @@ key/value pairs at various points in the data management process.
             </customCommand>
           </customCommands> -->
         </component>
-<!--
-            <component>
+
+        <component>
           <name>ACCUMULO_TSERVER</name>
           <displayName>TServer</displayName>
           <category>SLAVE</category>
@@ -78,7 +78,7 @@ key/value pairs at various points in the data management process.
             <scriptType>PYTHON</scriptType>
           </commandScript>
         </component>
--->
+        
         <component>
           <name>ACCUMULO_CLIENT</name>
           <displayName>Accumulo Client</displayName>

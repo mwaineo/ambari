@@ -23,4 +23,4 @@ from resource_management import *
 config = Script.get_config()
 
 trace_user = config['configurations']['accumulo-site']['trace.user']
-accumulo_user = 'accumulo'
+accumulo_user = 'root'
