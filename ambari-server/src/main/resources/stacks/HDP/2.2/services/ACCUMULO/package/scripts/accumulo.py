@@ -22,7 +22,7 @@ import os
 from resource_management import *
 import sys
 
-def accumulo(name=None # 'master' or 'regionserver' or 'client'
+def accumulo(name=None # 'master' or 'tserver' or 'client'
               ):
   import params
 
@@ -81,7 +81,7 @@ def accumulo(name=None # 'master' or 'regionserver' or 'client'
     tag = 'GANGLIA-MASTER' if name == 'master' else 'GANGLIA-RS'
   )
 
-  accumulo_TemplateConfig( 'regionservers')
+  accumulo_TemplateConfig( 'tservers')
 
   if params.security_enabled:
     accumulo_TemplateConfig( format("accumulo_{name}_jaas.conf"))

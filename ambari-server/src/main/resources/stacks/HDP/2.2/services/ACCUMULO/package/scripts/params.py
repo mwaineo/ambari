@@ -85,20 +85,20 @@ service_check_data = functions.get_unique_id_and_date()
 user_group = config['configurations']['cluster-env']["user_group"]
 
 # TODO Kerberos things need to be verified
-if security_enabled:
-  _hostname_lowercase = config['hostname'].lower()
-  master_jaas_princ = config['configurations']['accumulo-site']['general.kerberos.principal'].replace('_HOST',_hostname_lowercase)
-  tserver_jaas_princ = config['configurations']['accumulo-site']['general.kerberos.principal'].replace('_HOST',_hostname_lowercase)
+#if security_enabled:
+#  _hostname_lowercase = config['hostname'].lower()
+#  master_jaas_princ = config['configurations']['accumulo-site']['general.kerberos.principal'].replace('_HOST',_hostname_lowercase)
+#  tserver_jaas_princ = config['configurations']['accumulo-site']['general.kerberos.principal'].replace('_HOST',_hostname_lowercase)
 # TODO Kerberos things need to be verified
-master_keytab_path = config['configurations']['accumulo-site']['general.kerberos.keytab']
-tserver_keytab_path = config['configurations']['accumulo-site']['general.kerberos.keytab']
-smoke_user_keytab = config['configurations']['cluster-env']['smokeuser_keytab']
-accumulo_user_keytab = config['configurations']['accumulo-env']['accumulo_user_keytab']
-kinit_path_local = functions.get_kinit_path(["/usr/bin", "/usr/kerberos/bin", "/usr/sbin"])
-if security_enabled:
-  kinit_cmd = format("{kinit_path_local} -kt {accumulo_user_keytab} {accumulo_principal_name};")
-else:
-  kinit_cmd = ""
+#master_keytab_path = config['configurations']['accumulo-site']['general.kerberos.keytab']
+#tserver_keytab_path = config['configurations']['accumulo-site']['general.kerberos.keytab']
+#smoke_user_keytab = config['configurations']['cluster-env']['smokeuser_keytab']
+#accumulo_user_keytab = config['configurations']['accumulo-env']['accumulo_user_keytab']
+#kinit_path_local = functions.get_kinit_path(["/usr/bin", "/usr/kerberos/bin", "/usr/sbin"])
+#if security_enabled:
+#  kinit_cmd = format("{kinit_path_local} -kt {accumulo_user_keytab} {accumulo_principal_name};")
+#else:
+#  kinit_cmd = ""
 
 #log4j.properties
 if (('accumulo-log4j' in config['configurations']) and ('content' in config['configurations']['accumulo-log4j'])):

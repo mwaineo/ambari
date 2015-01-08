@@ -43,16 +43,7 @@ class TestAccumuloClient(RMFTestCase):
       group = 'hadoop',
       recursive = True,
     )
-    self.assertResourceCalled('Directory', '/hadoop/accumulo',
-      owner = 'accumulo',
-      recursive = True,
-    )
-    self.assertResourceCalled('Directory', '/hadoop/accumulo/local/jars',
-      owner = 'accumulo',
-      group = 'hadoop',
-      mode=0775,
-      recursive = True,
-    )
+
     self.assertResourceCalled('XmlConfig', 'accumulo-site.xml',
       owner = 'accumulo',
       group = 'hadoop',

@@ -59,10 +59,55 @@
         "slider-env": {
             "content": "envproperties\nline2"
         },
-        "accumulo-site": {},
-        "accumulo-env": {}
+      "accumulo-site": {
+          "instance.zookeeper.host": "localhost:2181",
+          "general.kerberos.principal": "",
+          "general.kerberos.keytab": "",
+          "logger.dir.walog": "walogs",
+          "instance.secret": "DEFAULT",
+          "tserver.memory.maps.max": "80M",
+          "tserver.memory.maps.native.enabled": "false",
+          "tserver.cache.data.size": "7M",
+          "tserver.cache.index.size": "20M",
+          "trace.token.property.password": "secret",
+          "trace.user": "root",
+          "tserver.sort.buffer.size": "50M",
+          "tserver.walog.max.size": "100M",
+          "instance.volumes": "",
+          "general.classpaths": "      $ACCUMULO_HOME/lib/accumulo-server.jar,\n      $ACCUMULO_HOME/lib/accumulo-core.jar,\n      $ACCUMULO_HOME/lib/accumulo-start.jar,\n      $ACCUMULO_HOME/lib/accumulo-fate.jar,\n      $ACCUMULO_HOME/lib/accumulo-proxy.jar,\n      $ACCUMULO_HOME/lib/[^.].*.jar,\n      $ZOOKEEPER_HOME/zookeeper[^.].*.jar,\n      $HADOOP_CONF_DIR,\n      $HADOOP_PREFIX/share/hadoop/common/[^.].*.jar,\n      $HADOOP_PREFIX/share/hadoop/common/lib/(?!slf4j)[^.].*.jar,\n      $HADOOP_PREFIX/share/hadoop/hdfs/[^.].*.jar,\n      $HADOOP_PREFIX/share/hadoop/mapreduce/[^.].*.jar,\n      $HADOOP_PREFIX/share/hadoop/yarn/[^.].*.jar,\n      /usr/hdp/current/hadoop-client/[^.].*.jar,\n      /usr/hdp/current/hadoop-client/lib/(?!slf4j)[^.].*.jar,\n      /usr/hdp/current/hadoop-hdfs-client/[^.].*.jar,\n      /usr/hdp/current/hadoop-mapreduce-client/[^.].*.jar,\n      /usr/hdp/current/hadoop-yarn-client/[^.].*.jar,\n      /usr/hdp/current/hadoop-yarn-client/lib/jersey.*.jar,\n      $HADOOP_PREFIX/[^.].*.jar,\n      $HADOOP_PREFIX/lib/(?!slf4j)[^.].*.jar,\n      /usr/hdp/current/hive-client/lib/hive-accumulo-handler.jar,"       
+      },
+      "accumulo-env": {
+          "accumulo_log_dir": "/var/log/accumulo",          
+          "content": "#! /usr/bin/env bash\n\n# Licensed to the Apache Software Foundation (ASF) under one or more\n# contributor license agreements.  See the NOTICE file distributed with\n# this work for additional information regarding copyright ownership.\n# The ASF licenses this file to You under the Apache License, Version 2.0\n# (the \"License\"); you may not use this file except in compliance with\n# the License.  You may obtain a copy of the License at\n#\n#     http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n###\n### Configure these environment variables to point to your local installations.\n###\n### The functional tests require conditional values, so keep this style:\n###\n### test -z \"$JAVA_HOME\" && export JAVA_HOME=/usr/lib/jvm/java\n###\n###\n### Note that the -Xmx -Xms settings below require substantial free memory:\n### you may want to use smaller values, especially when running everything\n### on a single machine.\n###\nif [ -z \"$HADOOP_HOME\" ]\nthen\n   test -z \"$HADOOP_PREFIX\"      && export HADOOP_PREFIX=\"/usr/hdp/current/hadoop-client\"\nelse\n   HADOOP_PREFIX=\"$HADOOP_HOME\"\n   unset HADOOP_HOME\nfi\n\n# hadoop-1.2:\n# test -z \"$HADOOP_CONF_DIR\"       && export HADOOP_CONF_DIR=\"$HADOOP_PREFIX/conf\"\n# hadoop-2.0:\ntest -z \"$HADOOP_CONF_DIR\"     && export HADOOP_CONF_DIR=\"/etc/hadoop/conf\"\n\ntest -z \"$JAVA_HOME\"             && export JAVA_HOME=$(/usr/libexec/java_home)\ntest -z \"$ZOOKEEPER_HOME\"        && export ZOOKEEPER_HOME=/usr/hdp/current/zookeeper-client\ntest -z \"$ACCUMULO_LOG_DIR\"      && export ACCUMULO_LOG_DIR=$ACCUMULO_HOME/logs\nif [ -f ${ACCUMULO_CONF_DIR}/accumulo.policy ]\nthen\n   POLICY=\"-Djava.security.manager -Djava.security.policy=${ACCUMULO_CONF_DIR}/accumulo.policy\"\nfi\ntest -z \"$ACCUMULO_TSERVER_OPTS\" && export ACCUMULO_TSERVER_OPTS=\"${POLICY} -Xmx1G -Xms1G \"\ntest -z \"$ACCUMULO_MASTER_OPTS\"  && export ACCUMULO_MASTER_OPTS=\"${POLICY} -Xmx128m -Xms128m\"\ntest -z \"$ACCUMULO_MONITOR_OPTS\" && export ACCUMULO_MONITOR_OPTS=\"${POLICY} -Xmx64m -Xms64m\"\ntest -z \"$ACCUMULO_GC_OPTS\"      && export ACCUMULO_GC_OPTS=\"-Xmx64m -Xms64m\"\ntest -z \"$ACCUMULO_GENERAL_OPTS\" && export ACCUMULO_GENERAL_OPTS=\"-XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -Djava.net.preferIPv4Stack=true\"\ntest -z \"$ACCUMULO_OTHER_OPTS\"   && export ACCUMULO_OTHER_OPTS=\"-Xmx128m -Xms64m\"\n# what do when the JVM runs out of heap memory\nexport ACCUMULO_KILL_CMD='kill -9 %p'\n\n### Optionally look for hadoop and accumulo native libraries for your\n### platform in additional directories. (Use DYLD_LIBRARY_PATH on Mac OS X.)\n### May not be necessary for Hadoop 2.x or using an RPM that installs to\n### the correct system library directory.\n# export LD_LIBRARY_PATH=${HADOOP_PREFIX}/lib/native/${PLATFORM}:${LD_LIBRARY_PATH}\n\n# Should the monitor bind to all network interfaces -- default: false\n# export ACCUMULO_MONITOR_BIND_ALL=\"true\""
+      }
     },
-    "configuration_attributes": {},
+    "configuration_attributes": {
+      "accumulo-site": {
+          "final": {
+              "instance.zookeeper.host": "true",
+              "general.kerberos.principal": "true",
+              "general.kerberos.keytab": "true",
+              "logger.dir.walog": "true",
+              "instance.secret": "true",
+              "tserver.memory.maps.max": "true",
+              "tserver.memory.maps.native.enabled": "true",
+              "tserver.cache.data.size": "true",
+              "tserver.cache.index.size": "true",
+              "trace.user": "true",
+              "trace.token.property.password": "true",
+              "tserver.sort.buffer.size": "true",
+              "tserver.walog.max.size": "true",
+              "instance.volumes": "true",
+              "general.classpaths": "true"
+          }
+      },
+      "accumulo-env": {
+          "final": {
+              "accumulo_log_dir": "true",
+              "content": "true"             
+          }
+      }        
+    },
     "configurationTags": {
         "slider-client": {
             "tag": "version1"
