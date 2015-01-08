@@ -22,5 +22,5 @@ from resource_management import *
 
 config = Script.get_config()
 
-pid_dir = config['configurations']['hbase-env']['hbase_pid_dir']
-hbase_user = config['configurations']['hbase-env']['hbase_user']
+trace_user = config['configurations']['accumulo-site']['trace.user']
+accumulo_user = 'accumulo'

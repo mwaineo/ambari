@@ -19,16 +19,16 @@
   <schemaVersion>2.0</schemaVersion>
   <services>
     <service>
-      <name>HBASE</name>
-      <displayName>HBase</displayName>
+      <name>ACCUMULO</name>
+      <displayName>Accumulo</displayName>
       <comment>Non-relational distributed database and centralized service for configuration management &amp;
         synchronization
       </comment>
-      <version>0.96.0.2.0</version>
+      <version>1.6.1.2.0</version>
       <components>
         <component>
-          <name>HBASE_MASTER</name>
-          <displayName>HBase Master</displayName>
+          <name>ACCUMULO_MASTER</name>
+          <displayName>Accumulo Master</displayName>
           <category>MASTER</category>
           <cardinality>1+</cardinality>
           <dependencies>
@@ -44,12 +44,12 @@
               <scope>cluster</scope>
               <auto-deploy>
                 <enabled>true</enabled>
-                <co-locate>HBASE/HBASE_MASTER</co-locate>
+                <co-locate>ACCUMULO/ACCUMULO_MASTER</co-locate>
               </auto-deploy>
             </dependency>
           </dependencies>
           <commandScript>
-            <script>scripts/hbase_master.py</script>
+            <script>scripts/accumulo_master.py</script>
             <scriptType>PYTHON</scriptType>
             <timeout>600</timeout>
           </commandScript>
@@ -57,7 +57,7 @@
             <customCommand>
               <name>DECOMMISSION</name>
               <commandScript>
-                <script>scripts/hbase_master.py</script>
+                <script>scripts/accumulo_master.py</script>
                 <scriptType>PYTHON</scriptType>
                 <timeout>600</timeout>
               </commandScript>
@@ -66,45 +66,45 @@
         </component>
 
         <component>
-          <name>HBASE_REGIONSERVER</name>
-          <displayName>RegionServer</displayName>
+          <name>ACCUMULO_TSERVER</name>
+          <displayName>TServer</displayName>
           <category>SLAVE</category>
           <cardinality>1+</cardinality>
           <commandScript>
-            <script>scripts/hbase_regionserver.py</script>
+            <script>scripts/accumulo_tserver.py</script>
             <scriptType>PYTHON</scriptType>
           </commandScript>
         </component>
 
         <component>
-          <name>HBASE_CLIENT</name>
-          <displayName>HBase Client</displayName>
+          <name>ACCUMULO_CLIENT</name>
+          <displayName>Accumulo Client</displayName>
           <category>CLIENT</category>
           <cardinality>1+</cardinality>
           <commandScript>
-            <script>scripts/hbase_client.py</script>
+            <script>scripts/accumulo_client.py</script>
             <scriptType>PYTHON</scriptType>
           </commandScript>
           <configFiles>
             <configFile>
               <type>xml</type>
-              <fileName>hbase-site.xml</fileName>
-              <dictionaryName>hbase-site</dictionaryName>
+              <fileName>accumulo-site.xml</fileName>
+              <dictionaryName>accumulo-site</dictionaryName>
             </configFile>
             <configFile>
               <type>env</type>
-              <fileName>hbase-env.sh</fileName>
-              <dictionaryName>hbase-env</dictionaryName>
+              <fileName>accumulo-env.sh</fileName>
+              <dictionaryName>accumulo-env</dictionaryName>
             </configFile>
             <configFile>
-              <type>xml</type>
-              <fileName>hbase-policy.xml</fileName>
-              <dictionaryName>hbase-policy</dictionaryName>
+              <type>env</type>
+              <fileName>accumulo.policy</fileName>
+              <dictionaryName>accumulo-policy</dictionaryName>
             </configFile>
             <configFile>
               <type>env</type>
               <fileName>log4j.properties</fileName>
-              <dictionaryName>hbase-log4j</dictionaryName>
+              <dictionaryName>accumulo-log4j</dictionaryName>
             </configFile>            
           </configFiles>
         </component>
@@ -115,7 +115,7 @@
           <osFamily>any</osFamily>
           <packages>
             <package>
-              <name>hbase</name>
+              <name>accumulo</name>
             </package>
           </packages>
         </osSpecific>
@@ -133,10 +133,10 @@
       </requiredServices>
 
       <configuration-dependencies>
-        <config-type>hbase-policy</config-type>
-        <config-type>hbase-site</config-type>
-        <config-type>hbase-env</config-type>
-        <config-type>hbase-log4j</config-type>
+        <config-type>accumulo-site</config-type>
+        <config-type>accumulo-env</config-type>
+        <config-type>accumulo-log4j</config-type>
+        <config-type>accumulo-policy</config-type>
       </configuration-dependencies>
 
     </service>

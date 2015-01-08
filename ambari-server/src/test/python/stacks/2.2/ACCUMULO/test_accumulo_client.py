@@ -24,79 +24,15 @@ from stacks.utils.RMFTestCase import *
 class TestAccumuloClient(RMFTestCase):
   
   def test_configure_secured(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_client.py",
+    self.executeScript("2.2/services/ACCUMULO/package/scripts/accumulo_client.py",
                    classname = "AccumuloClient",
                    command = "configure",
                    config_file="secured.json"
     )
-
-    self.assertResourceCalled('Directory', '/etc/accumulo/conf',
-      owner = 'accumulo',
-      group = 'hadoop',
-      recursive = True,
-    )
-    self.assertResourceCalled('Directory', '/hadoop/accumulo',
-      owner = 'accumulo',
-      recursive = True,
-    )
-    self.assertResourceCalled('Directory', '/hadoop/accumulo/local/jars',
-      owner = 'accumulo',
-      group = 'hadoop',
-      mode=0775,
-      recursive = True,
-    )
-    self.assertResourceCalled('XmlConfig', 'accumulo-site.xml',
-      owner = 'accumulo',
-      group = 'hadoop',
-      conf_dir = '/etc/accumulo/conf',
-      configurations = self.getConfig()['configurations']['accumulo-site'],
-      configuration_attributes = self.getConfig()['configuration_attributes']['accumulo-site']
-    )
-    self.assertResourceCalled('XmlConfig', 'hdfs-site.xml',
-      owner = 'accumulo',
-      group = 'hadoop',
-      conf_dir = '/etc/accumulo/conf',
-      configurations = self.getConfig()['configurations']['hdfs-site'],
-      configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
-    )
-    self.assertResourceCalled('XmlConfig', 'hdfs-site.xml',
-      owner = 'hdfs',
-      group = 'hadoop',
-      conf_dir = '/etc/hadoop/conf',
-      configurations = self.getConfig()['configurations']['hdfs-site'],
-      configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
-    )
-    self.assertResourceCalled('File', '/etc/accumulo/conf/accumulo-policy.xml',
-      owner = 'accumulo',
-      group = 'hadoop',
-    )
-    self.assertResourceCalled('File', '/etc/accumulo/conf/accumulo-env.sh',
-        content = InlineTemplate(self.getConfig()['configurations']['accumulo-env']['content']),
-        owner = 'accumulo',
-    )
-    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/hadoop-metrics2-accumulo.properties',
-      owner = 'accumulo',
-      template_tag = 'GANGLIA-RS',
-    )
-    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/regionservers',
-      owner = 'accumulo',
-      template_tag = None,
-    )
-    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/accumulo_client_jaas.conf',
-      owner = 'accumulo',
-      template_tag = None,
-    )
-    self.assertResourceCalled('File',
-                              '/etc/accumulo/conf/log4j.properties',
-                              mode=0644,
-                              group='hadoop',
-                              owner='accumulo',
-                              content='log4jproperties\nline2'
-    )
-    self.assertNoMoreResources()
+    self.assertNoMoreResources() 
     
   def test_configure_default(self):
-    self.executeScript("2.0.6/services/ACCUMULO/package/scripts/accumulo_client.py",
+    self.executeScript("2.2/services/ACCUMULO/package/scripts/accumulo_client.py",
                    classname = "AccumuloClient",
                    command = "configure",
                    config_file="default.json"
@@ -150,7 +86,7 @@ class TestAccumuloClient(RMFTestCase):
       owner = 'accumulo',
       template_tag = 'GANGLIA-RS',
     )
-    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/regionservers',
+    self.assertResourceCalled('TemplateConfig', '/etc/accumulo/conf/masters',
       owner = 'accumulo',
       template_tag = None,
     )

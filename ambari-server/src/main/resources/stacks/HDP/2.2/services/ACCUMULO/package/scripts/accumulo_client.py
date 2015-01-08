@@ -21,10 +21,9 @@ limitations under the License.
 import sys
 from resource_management import *
 
-from hbase import hbase
-
+from accumulo import accumulo
          
-class HbaseClient(Script):
+class AccumuloClient(Script):
   def install(self, env):
     self.install_packages(env)
     self.configure(env)
@@ -33,11 +32,11 @@ class HbaseClient(Script):
     import params
     env.set_params(params)
     
-    hbase(name='client')
+    accumulo(name='client')
 
   def status(self, env):
     raise ClientComponentHasNoStatus()
 
 
 if __name__ == "__main__":
-  HbaseClient().execute()
+  AccumuloClient().execute()

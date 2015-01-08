@@ -22,42 +22,30 @@ import os
 from resource_management import *
 import sys
 
-def hbase(name=None # 'master' or 'regionserver' or 'client'
+def accumulo(name=None # 'master' or 'regionserver' or 'client'
               ):
   import params
 
-  Directory( params.hbase_conf_dir,
-      owner = params.hbase_user,
+  Directory( params.accumulo_conf_dir,
+      owner = params.accumulo_user,
       group = params.user_group,
       recursive = True
   )
 
-  Directory (params.tmp_dir,
-             owner = params.hbase_user,
-             recursive = True
-  )
-
-  Directory (os.path.join(params.local_dir, "jars"),
-             owner = params.hbase_user,
-             group = params.user_group,
-             mode=0775,
-             recursive = True
-  )
-
-  XmlConfig( "hbase-site.xml",
-            conf_dir = params.hbase_conf_dir,
-            configurations = params.config['configurations']['hbase-site'],
-            configuration_attributes=params.config['configuration_attributes']['hbase-site'],
-            owner = params.hbase_user,
+  XmlConfig( "accumulo-site.xml",
+            conf_dir = params.accumulo_conf_dir,
+            configurations = params.config['configurations']['accumulo-site'],
+            configuration_attributes=params.config['configuration_attributes']['accumulo-site'],
+            owner = params.accumulo_user,
             group = params.user_group
   )
 
   if 'hdfs-site' in params.config['configurations']:
     XmlConfig( "hdfs-site.xml",
-            conf_dir = params.hbase_conf_dir,
+            conf_dir = params.accumulo_conf_dir,
             configurations = params.config['configurations']['hdfs-site'],
             configuration_attributes=params.config['configuration_attributes']['hdfs-site'],
-            owner = params.hbase_user,
+            owner = params.accumulo_user,
             group = params.user_group
     )
 
@@ -69,77 +57,77 @@ def hbase(name=None # 'master' or 'regionserver' or 'client'
             group=params.user_group
     )
 
-  if 'hbase-policy' in params.config['configurations']:
-    XmlConfig( "hbase-policy.xml",
-            conf_dir = params.hbase_conf_dir,
-            configurations = params.config['configurations']['hbase-policy'],
-            configuration_attributes=params.config['configuration_attributes']['hbase-policy'],
-            owner = params.hbase_user,
+  if 'accumulo-policy' in params.config['configurations']:
+    XmlConfig( "accumulo-policy.xml",
+            conf_dir = params.accumulo_conf_dir,
+            configurations = params.config['configurations']['accumulo-policy'],
+            configuration_attributes=params.config['configuration_attributes']['accumulo-policy'],
+            owner = params.accumulo_user,
             group = params.user_group
     )
   # Manually overriding ownership of file installed by hadoop package
   else: 
-    File( format("{params.hbase_conf_dir}/hbase-policy.xml"),
-      owner = params.hbase_user,
+    File( format("{params.accumulo_conf_dir}/accumulo-policy.xml"),
+      owner = params.accumulo_user,
       group = params.user_group
     )
 
-  File(format("{hbase_conf_dir}/hbase-env.sh"),
-       owner = params.hbase_user,
-       content=InlineTemplate(params.hbase_env_sh_template)
+  File(format("{accumulo_conf_dir}/accumulo-env.sh"),
+       owner = params.accumulo_user,
+       content=InlineTemplate(params.accumulo_env_sh_template)
   )     
        
-  hbase_TemplateConfig( params.metric_prop_file_name,
+  accumulo_TemplateConfig( params.metric_prop_file_name,
     tag = 'GANGLIA-MASTER' if name == 'master' else 'GANGLIA-RS'
   )
 
-  hbase_TemplateConfig( 'regionservers')
+  accumulo_TemplateConfig( 'regionservers')
 
   if params.security_enabled:
-    hbase_TemplateConfig( format("hbase_{name}_jaas.conf"))
+    accumulo_TemplateConfig( format("accumulo_{name}_jaas.conf"))
   
   if name != "client":
     Directory( params.pid_dir,
-      owner = params.hbase_user,
+      owner = params.accumulo_user,
       recursive = True
     )
   
     Directory (params.log_dir,
-      owner = params.hbase_user,
+      owner = params.accumulo_user,
       recursive = True
     )
 
   if (params.log4j_props != None):
-    File(format("{params.hbase_conf_dir}/log4j.properties"),
+    File(format("{params.accumulo_conf_dir}/log4j.properties"),
          mode=0644,
          group=params.user_group,
-         owner=params.hbase_user,
+         owner=params.accumulo_user,
          content=params.log4j_props
     )
-  elif (os.path.exists(format("{params.hbase_conf_dir}/log4j.properties"))):
-    File(format("{params.hbase_conf_dir}/log4j.properties"),
+  elif (os.path.exists(format("{params.accumulo_conf_dir}/log4j.properties"))):
+    File(format("{params.accumulo_conf_dir}/log4j.properties"),
       mode=0644,
       group=params.user_group,
-      owner=params.hbase_user
+      owner=params.accumulo_user
     )
-  if name in ["master","regionserver"]:
-    params.HdfsDirectory(params.hbase_hdfs_root_dir,
+  if name in ["master","tserver"]:
+    params.HdfsDirectory(params.accumulo_hdfs_root_dir,
                          action="create_delayed",
-                         owner=params.hbase_user
+                         owner=params.accumulo_user
     )
-    params.HdfsDirectory(params.hbase_staging_dir,
+    params.HdfsDirectory(params.accumulo_staging_dir,
                          action="create_delayed",
-                         owner=params.hbase_user,
+                         owner=params.accumulo_user,
                          mode=0711
     )
     params.HdfsDirectory(None, action="create")
 
-def hbase_TemplateConfig(name, 
+def accumulo_TemplateConfig(name, 
                          tag=None
                          ):
   import params
 
-  TemplateConfig( format("{hbase_conf_dir}/{name}"),
-      owner = params.hbase_user,
+  TemplateConfig( format("{accumulo_conf_dir}/{name}"),
+      owner = params.accumulo_user,
       template_tag = tag
   )

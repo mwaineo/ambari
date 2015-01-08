@@ -34,92 +34,82 @@ stack_is_hdp22_or_further = hdp_stack_version != "" and compare_versions(hdp_sta
 #hadoop params
 if stack_is_hdp22_or_further:
   hadoop_bin_dir = format("/usr/hdp/current/hadoop-client/bin")
-  daemon_script = format('/usr/hdp/current/hbase-client/bin/hbase-daemon.sh')
-  region_mover = format('/usr/hdp/current/hbase-client/bin/region_mover.rb')
-  region_drainer = format('/usr/hdp/current/hbase-client/bin/draining_servers.rb')
-  hbase_cmd = format('/usr/hdp/current/hbase-client/bin/hbase')
+  daemon_script = format('/usr/hdp/current/accumulo-client/bin/start-here.sh')
+  accumulo_cmd = format('/usr/hdp/current/accumulo-client/bin/accumulo')
 else:
   hadoop_bin_dir = "/usr/bin"
-  daemon_script = "/usr/lib/hbase/bin/hbase-daemon.sh"
-  region_mover = "/usr/lib/hbase/bin/region_mover.rb"
-  region_drainer = "/usr/lib/hbase/bin/draining_servers.rb"
-  hbase_cmd = "/usr/lib/hbase/bin/hbase"
+  daemon_script = format('/usr/hdp/current/accumulo/bin/start-here.sh')
+  accumulo_cmd = format('/usr/hdp/current/accumulo/bin/accumulo')
 
 hadoop_conf_dir = "/etc/hadoop/conf"
-hbase_conf_dir = "/etc/hbase/conf"
-hbase_excluded_hosts = config['commandParams']['excluded_hosts']
-hbase_drain_only = default("/commandParams/mark_draining_only",False)
-hbase_included_hosts = config['commandParams']['included_hosts']
+accumulo_conf_dir = "/etc/accumulo/conf"
+accumulo_excluded_hosts = config['commandParams']['excluded_hosts']
+accumulo_included_hosts = config['commandParams']['included_hosts']
 
-hbase_user = status_params.hbase_user
-hbase_principal_name = config['configurations']['hbase-env']['hbase_principal_name']
+accumulo_user = status_params.accumulo_user
+accumulo_principal_name = config['configurations']['accumulo-site']['general.kerberos.principal']
 smokeuser = config['configurations']['cluster-env']['smokeuser']
 _authentication = config['configurations']['core-site']['hadoop.security.authentication']
 security_enabled = config['configurations']['cluster-env']['security_enabled']
 
 # this is "hadoop-metrics.properties" for 1.x stacks
-metric_prop_file_name = "hadoop-metrics2-hbase.properties"
+metric_prop_file_name = "accumulo-metrics.xml"
 
 # not supporting 32 bit jdk.
 java64_home = config['hostLevelParams']['java_home']
 
-log_dir = config['configurations']['hbase-env']['hbase_log_dir']
-master_heapsize = config['configurations']['hbase-env']['hbase_master_heapsize']
+log_dir = config['configurations']['accumulo-env']['accumulo_log_dir']
+master_opts = config['configurations']['accumulo-env']['accumulo_master_opts']
 
-regionserver_heapsize = config['configurations']['hbase-env']['hbase_regionserver_heapsize']
-regionserver_xmn_max = config['configurations']['hbase-env']['hbase_regionserver_xmn_max']
-regionserver_xmn_percent = config['configurations']['hbase-env']['hbase_regionserver_xmn_ratio']
-regionserver_xmn_size = calc_xmn_from_xms(regionserver_heapsize, regionserver_xmn_percent, regionserver_xmn_max)
+tserver_opts = config['configurations']['accumulo-env']['accumulo_tserver_opts']
 
-pid_dir = status_params.pid_dir
-tmp_dir = config['configurations']['hbase-site']['hbase.tmp.dir']
 # TODO UPGRADE default, update site during upgrade
-_local_dir_conf = default('/configurations/hbase-site/hbase.local.dir', "${hbase.tmp.dir}/local")
-local_dir = substitute_vars(_local_dir_conf, config['configurations']['hbase-site'])
 
-client_jaas_config_file = format("{hbase_conf_dir}/hbase_client_jaas.conf")
-master_jaas_config_file = format("{hbase_conf_dir}/hbase_master_jaas.conf")
-regionserver_jaas_config_file = format("{hbase_conf_dir}/hbase_regionserver_jaas.conf")
+# TODO Kerberos things need to be verified
+client_jaas_config_file = format("{accumulo_conf_dir}/accumulo_client_jaas.conf")
+master_jaas_config_file = format("{accumulo_conf_dir}/accumulo_master_jaas.conf")
+tserver_jaas_config_file = format("{accumulo_conf_dir}/accumulo_tserver_jaas.conf")
 
 ganglia_server_hosts = default('/clusterHostInfo/ganglia_server_host', []) # is not passed when ganglia is not present
 ganglia_server_host = '' if len(ganglia_server_hosts) == 0 else ganglia_server_hosts[0]
 
-# if hbase is selected the hbase_rs_hosts, should not be empty, but still default just in case
+# if accumulo is selected the accumulo_ts_hosts, should not be empty, but still default just in case
 if 'slave_hosts' in config['clusterHostInfo']:
-  rs_hosts = default('/clusterHostInfo/hbase_rs_hosts', '/clusterHostInfo/slave_hosts') #if hbase_rs_hosts not given it is assumed that region servers on same nodes as slaves
+  ts_hosts = default('/clusterHostInfo/accumulo_ts_hosts', '/clusterHostInfo/slave_hosts') #if accumulo_ts_hosts not given it is assumed that region servers on same nodes as slaves
 else:
-  rs_hosts = default('/clusterHostInfo/hbase_rs_hosts', '/clusterHostInfo/all_hosts') 
+  ts_hosts = default('/clusterHostInfo/accumulo_ts_hosts', '/clusterHostInfo/all_hosts') 
 
 smoke_test_user = config['configurations']['cluster-env']['smokeuser']
 smokeuser_permissions = "RWXCA"
 service_check_data = functions.get_unique_id_and_date()
 user_group = config['configurations']['cluster-env']["user_group"]
 
+# TODO Kerberos things need to be verified
 if security_enabled:
   _hostname_lowercase = config['hostname'].lower()
-  master_jaas_princ = config['configurations']['hbase-site']['hbase.master.kerberos.principal'].replace('_HOST',_hostname_lowercase)
-  regionserver_jaas_princ = config['configurations']['hbase-site']['hbase.regionserver.kerberos.principal'].replace('_HOST',_hostname_lowercase)
-
-master_keytab_path = config['configurations']['hbase-site']['hbase.master.keytab.file']
-regionserver_keytab_path = config['configurations']['hbase-site']['hbase.regionserver.keytab.file']
+  master_jaas_princ = config['configurations']['accumulo-site']['general.kerberos.principal'].replace('_HOST',_hostname_lowercase)
+  tserver_jaas_princ = config['configurations']['accumulo-site']['general.kerberos.principal'].replace('_HOST',_hostname_lowercase)
+# TODO Kerberos things need to be verified
+master_keytab_path = config['configurations']['accumulo-site']['general.kerberos.keytab']
+tserver_keytab_path = config['configurations']['accumulo-site']['general.kerberos.keytab']
 smoke_user_keytab = config['configurations']['cluster-env']['smokeuser_keytab']
-hbase_user_keytab = config['configurations']['hbase-env']['hbase_user_keytab']
+accumulo_user_keytab = config['configurations']['accumulo-env']['accumulo_user_keytab']
 kinit_path_local = functions.get_kinit_path(["/usr/bin", "/usr/kerberos/bin", "/usr/sbin"])
 if security_enabled:
-  kinit_cmd = format("{kinit_path_local} -kt {hbase_user_keytab} {hbase_principal_name};")
+  kinit_cmd = format("{kinit_path_local} -kt {accumulo_user_keytab} {accumulo_principal_name};")
 else:
   kinit_cmd = ""
 
 #log4j.properties
-if (('hbase-log4j' in config['configurations']) and ('content' in config['configurations']['hbase-log4j'])):
-  log4j_props = config['configurations']['hbase-log4j']['content']
+if (('accumulo-log4j' in config['configurations']) and ('content' in config['configurations']['accumulo-log4j'])):
+  log4j_props = config['configurations']['accumulo-log4j']['content']
 else:
   log4j_props = None
   
-hbase_env_sh_template = config['configurations']['hbase-env']['content']
+accumulo_env_sh_template = config['configurations']['accumulo-env']['content']
 
-hbase_hdfs_root_dir = config['configurations']['hbase-site']['hbase.rootdir']
-hbase_staging_dir = "/apps/hbase/staging"
+accumulo_hdfs_root_dir = config['configurations']['accumulo-site']['instance.volumes']
+accumulo_staging_dir = "/apps/accumulo/staging"
 #for create_hdfs_directory
 hostname = config["hostname"]
 hdfs_user_keytab = config['configurations']['hadoop-env']['hdfs_user_keytab']

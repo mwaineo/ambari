@@ -105,7 +105,12 @@
               <type>env</type>
               <fileName>log4j.properties</fileName>
               <dictionaryName>hbase-log4j</dictionaryName>
-            </configFile>            
+            </configFile>
+            <configFile>
+              <type>xml</type>
+              <fileName>hbase-site.xml</fileName>
+              <dictionaryName>hbase-site</dictionaryName>
+            </configFile>                          
           </configFiles>
         </component>
       </components>
@@ -137,6 +142,7 @@
         <config-type>hbase-site</config-type>
         <config-type>hbase-env</config-type>
         <config-type>hbase-log4j</config-type>
+        <config-type>accumulo-site</config-type>
       </configuration-dependencies>
 
     </service>

@@ -58,7 +58,9 @@
         },
         "slider-env": {
             "content": "envproperties\nline2"
-        }
+        },
+        "accumulo-site": {},
+        "accumulo-env": {}
     },
     "configuration_attributes": {},
     "configurationTags": {
@@ -69,6 +71,12 @@
             "tag": "version1"
         },
         "slider-env": {
+            "tag": "version1"
+        },
+        "accumulo-site": {
+            "tag": "version1"
+        },
+        "accumulo-env": {
             "tag": "version1"
         }
     },
