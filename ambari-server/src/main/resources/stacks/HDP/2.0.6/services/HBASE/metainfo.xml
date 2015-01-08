@@ -142,7 +142,7 @@
         <config-type>hbase-site</config-type>
         <config-type>hbase-env</config-type>
         <config-type>hbase-log4j</config-type>
-        <config-type>accumulo-site</config-type>
+        <config-type>hbase-site</config-type>
       </configuration-dependencies>
 
     </service>
