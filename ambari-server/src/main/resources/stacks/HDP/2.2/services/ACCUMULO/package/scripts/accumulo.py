@@ -39,17 +39,8 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
             owner = params.accumulo_user,
             group = params.user_group
   )
-
-  if 'hdfs-site' in params.config['configurations']:
-    XmlConfig( "hdfs-site.xml",
-            conf_dir = params.accumulo_conf_dir,
-            configurations = params.config['configurations']['hdfs-site'],
-            configuration_attributes=params.config['configuration_attributes']['hdfs-site'],
-            owner = params.accumulo_user,
-            group = params.user_group
-    )
-
-    XmlConfig("hdfs-site.xml",
+  
+  XmlConfig("hdfs-site.xml",
             conf_dir=params.hadoop_conf_dir,
             configurations=params.config['configurations']['hdfs-site'],
             configuration_attributes=params.config['configuration_attributes']['hdfs-site'],

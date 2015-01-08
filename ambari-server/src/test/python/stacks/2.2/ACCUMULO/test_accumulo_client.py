@@ -51,20 +51,7 @@ class TestAccumuloClient(RMFTestCase):
       configurations = self.getConfig()['configurations']['accumulo-site'],
       configuration_attributes = self.getConfig()['configuration_attributes']['accumulo-site']
     )
-    self.assertResourceCalled('XmlConfig', 'hdfs-site.xml',
-      owner = 'accumulo',
-      group = 'hadoop',
-      conf_dir = '/etc/accumulo/conf',
-      configurations = self.getConfig()['configurations']['hdfs-site'],
-      configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
-    )
-    self.assertResourceCalled('XmlConfig', 'hdfs-site.xml',
-      owner = 'hdfs',
-      group = 'hadoop',
-      conf_dir = '/etc/hadoop/conf',
-      configurations = self.getConfig()['configurations']['hdfs-site'],
-      configuration_attributes = self.getConfig()['configuration_attributes']['hdfs-site']
-    )
+
     self.assertResourceCalled('File', '/etc/accumulo/conf/accumulo-policy.xml',
       owner = 'accumulo',
       group = 'hadoop',

@@ -105,12 +105,7 @@
               <type>env</type>
               <fileName>log4j.properties</fileName>
               <dictionaryName>hbase-log4j</dictionaryName>
-            </configFile>
-            <configFile>
-              <type>xml</type>
-              <fileName>hbase-site.xml</fileName>
-              <dictionaryName>hbase-site</dictionaryName>
-            </configFile>                          
+            </configFile>                       
           </configFiles>
         </component>
       </components>

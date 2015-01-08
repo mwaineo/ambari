@@ -27,7 +27,8 @@
       <version>1.6.1.2.2.0</version>
       <components>
         <component>
-          <name>ACCUMULO_MASTER</name>
+<!--
+            <name>ACCUMULO_MASTER</name>
           <displayName>Accumulo Master</displayName>
           <category>MASTER</category>
           <cardinality>1+</cardinality>
@@ -64,8 +65,9 @@
             </customCommand>
           </customCommands>
         </component>
-
-        <component>
+-->
+<!--
+            <component>
           <name>ACCUMULO_TSERVER</name>
           <displayName>TServer</displayName>
           <category>SLAVE</category>
@@ -75,7 +77,7 @@
             <scriptType>PYTHON</scriptType>
           </commandScript>
         </component>
-
+-->
         <component>
           <name>ACCUMULO_CLIENT</name>
           <displayName>Accumulo Client</displayName>
@@ -96,11 +98,12 @@
               <fileName>accumulo-env.sh</fileName>
               <dictionaryName>accumulo-env</dictionaryName>
             </configFile>
-            <configFile>
+<!--            <configFile>
               <type>env</type>
               <fileName>accumulo.policy</fileName>
               <dictionaryName>accumulo-policy</dictionaryName>
             </configFile>
+-->            
             <configFile>
               <type>env</type>
               <fileName>log4j.properties</fileName>
@@ -136,7 +139,7 @@
         <config-type>accumulo-site</config-type>
         <config-type>accumulo-env</config-type>
         <config-type>accumulo-log4j</config-type>
-        <config-type>accumulo-policy</config-type>
+<!--        <config-type>accumulo-policy</config-type> -->
       </configuration-dependencies>
 
     </service>
