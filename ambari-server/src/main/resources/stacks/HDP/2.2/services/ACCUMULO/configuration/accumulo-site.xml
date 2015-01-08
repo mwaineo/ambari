@@ -48,7 +48,7 @@
 
   <property>
     <name>instance.secret</name>
-    <value>DEFAULT</value>
+    <value>NOTDEFAULT</value>
     <description>A secret unique to a given instance that all servers must know in order to communicate with one another.
       Change it before initialization. To
       change it later use ./bin/accumulo org.apache.accumulo.server.util.ChangeSecret --old [oldpasswd] --new [newpasswd],
@@ -79,7 +79,7 @@
   <property>
     <name>trace.token.property.password</name>
     <!-- change this to the root user's password, and/or change the user below -->
-    <value>secret</value>
+    <value>hadoop</value>
   </property>
 
   <property>
@@ -103,7 +103,7 @@
   </property>
  <property>
     <name>instance.volumes</name>
-    <value></value>
+    <value>hdfs://localhost:8020/accumulo</value>
  </property>
   <property>
     <name>general.classpaths</name>

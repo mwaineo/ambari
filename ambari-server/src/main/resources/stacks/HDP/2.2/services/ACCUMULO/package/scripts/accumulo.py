@@ -62,20 +62,6 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
       owner = params.accumulo_user,
       group = params.user_group
     )
-
-  File(format("{accumulo_conf_dir}/accumulo-env.sh"),
-       owner = params.accumulo_user,
-       content=InlineTemplate(params.accumulo_env_sh_template)
-  )     
-       
-  accumulo_TemplateConfig( params.metric_prop_file_name,
-    tag = 'GANGLIA-MASTER' if name == 'master' else 'GANGLIA-RS'
-  )
-
-  accumulo_TemplateConfig( 'tservers')
-
-  if params.security_enabled:
-    accumulo_TemplateConfig( format("accumulo_{name}_jaas.conf"))
   
   if name != "client":
     Directory( params.pid_dir,
@@ -101,15 +87,36 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
       group=params.user_group,
       owner=params.accumulo_user
     )
+  
+  File(format("{accumulo_conf_dir}/accumulo-env.sh"),
+       owner = params.accumulo_user,
+       content=InlineTemplate(params.accumulo_env_sh_template)
+  )  
+  
+  accumulo_StaticFile("auditLog.xml")
+  accumulo_StaticFile("generic_logger.xml")
+  accumulo_StaticFile("monitor_logger.xml")
+  accumulo_StaticFile("accumulo-metrics.xml")
+  accumulo_StaticFile("tracers")
+  accumulo_StaticFile("gc")
+  accumulo_StaticFile("monitor")
+  accumulo_StaticFile("slaves")
+  accumulo_StaticFile("masters")
+  
+  configs = params.config['configurations']['accumulo-site']
+  
+  XmlConfig( "accumulo-site.xml",
+    conf_dir = params.conf_dir,
+    configurations = configs,
+    owner = params.accumulo_user,
+    group = params.user_group,
+    mode=0600
+  )
+
   if name in ["master","tserver"]:
     params.HdfsDirectory(params.accumulo_hdfs_root_dir,
                          action="create_delayed",
                          owner=params.accumulo_user
-    )
-    params.HdfsDirectory(params.accumulo_staging_dir,
-                         action="create_delayed",
-                         owner=params.accumulo_user,
-                         mode=0711
     )
     params.HdfsDirectory(None, action="create")
 
@@ -120,5 +127,16 @@ def accumulo_TemplateConfig(name,
 
   TemplateConfig( format("{accumulo_conf_dir}/{name}"),
       owner = params.accumulo_user,
+      group = params.user_group,
       template_tag = tag
   )
+
+def accumulo_StaticFile(name):
+    import params
+    
+    File(format("{params.accumulo_conf_dir}/{name}"),
+      mode=0644,
+      group=params.user_group,
+      owner=params.accumulo_user,
+      content=StaticFile(name)
+    )

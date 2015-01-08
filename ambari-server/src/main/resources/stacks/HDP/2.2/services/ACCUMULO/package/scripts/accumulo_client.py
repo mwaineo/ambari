@@ -35,7 +35,7 @@ class AccumuloClient(Script):
     accumulo(name='client')
 
   def status(self, env):
-    raise ClientComponentHasNoStatus()
+    pass
 
 
 if __name__ == "__main__":

@@ -21,14 +21,16 @@
     <service>
       <name>ACCUMULO</name>
       <displayName>Accumulo</displayName>
-      <comment>Non-relational distributed database and centralized service for configuration management &amp;
-        synchronization
+      <comment>Apache Accumulo is a sorted, distributed key/value store based on Google's 
+BigTable design. It is built on top of Apache Hadoop, Zookeeper, and Thrift. It 
+features a few novel improvements on the BigTable design in the form of 
+cell-level access labels and a server-side programming mechanism that can modify
+key/value pairs at various points in the data management process.
       </comment>
       <version>1.6.1.2.2.0</version>
       <components>
         <component>
-<!--
-            <name>ACCUMULO_MASTER</name>
+          <name>ACCUMULO_MASTER</name>
           <displayName>Accumulo Master</displayName>
           <category>MASTER</category>
           <cardinality>1+</cardinality>
@@ -54,7 +56,7 @@
             <scriptType>PYTHON</scriptType>
             <timeout>600</timeout>
           </commandScript>
-          <customCommands>
+<!--          <customCommands>
             <customCommand>
               <name>DECOMMISSION</name>
               <commandScript>
@@ -63,9 +65,8 @@
                 <timeout>600</timeout>
               </commandScript>
             </customCommand>
-          </customCommands>
+          </customCommands> -->
         </component>
--->
 <!--
             <component>
           <name>ACCUMULO_TSERVER</name>
@@ -97,13 +98,12 @@
               <type>env</type>
               <fileName>accumulo-env.sh</fileName>
               <dictionaryName>accumulo-env</dictionaryName>
-            </configFile>
-<!--            <configFile>
+            </configFile>          
+            <configFile>
               <type>env</type>
               <fileName>accumulo.policy</fileName>
               <dictionaryName>accumulo-policy</dictionaryName>
-            </configFile>
--->            
+            </configFile>        
             <configFile>
               <type>env</type>
               <fileName>log4j.properties</fileName>
@@ -112,7 +112,7 @@
           </configFiles>
         </component>
       </components>
-
+      
       <osSpecifics>
         <osSpecific>
           <osFamily>any</osFamily>
