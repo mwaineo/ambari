@@ -35,12 +35,12 @@ class AccumuloMaster(Script):
     accumulo(name='master')
 
     try:
-      Execute( format("{daemon_script} init --instance-name {accumulo_instance_name} --password {accumulo_root_password} --clear-instance-name >{log_dir}/accumulo-{accumulo_user}-init.out 2>{log_dir}/accumulo-{accumulo_user}-init.err"),
-             not_if=format("{hadoop_prefix}/bin/hadoop fs -stat {accumulo_hdfs_root_dir}"),
+      Execute( format("{params.daemon_script} init --instance-name {params.accumulo_instance_name} --password {params.accumulo_root_password} --clear-instance-name >{params.log_dir}/accumulo-{params.accumulo_user}-init.out 2>{params.log_dir}/accumulo-{params.accumulo_user}-init.err"),
+             not_if=format("{params.hadoop_prefix}/bin/hadoop fs -stat {params.accumulo_hdfs_root_dir"),
              user=params.accumulo_user)
     except Exception, e:
       try:
-        Execute( format("{hadoop_prefix}/bin/hadoop fs -rm -R {accumulo_hdfs_root_dir}"),
+        Execute( format("{params.hadoop_prefix}/bin/hadoop fs -rm -R {params.accumulo_hdfs_root_dir}"),
              user=params.accumulo_user)
       except:
         pass
@@ -51,13 +51,13 @@ class AccumuloMaster(Script):
       env.set_params(params)
       self.configure(env)
       
-      Execute(format("{daemon_script} {params.hostname} master"),
+      Execute(format("{params.daemon_script} {params.hostname} master"),
              user=params.accumulo_user
       )
-      Execute(format("{daemon_script} {params.hostname} monitor"),
+      Execute(format("{params.daemon_script} {params.hostname} monitor"),
              user=params.accumulo_user
       )
-      Execute(format("{daemon_script} {params.hostname} gc"),
+      Execute(format("{params.daemon_script} {params.hostname} gc"),
              user=params.accumulo_user
       )
       
@@ -65,7 +65,7 @@ class AccumuloMaster(Script):
       import params
       env.set_params(params)
 
-      Execute(format("{daemon_script_stop} {params.hostname}"),
+      Execute(format("{params.daemon_script_stop} {params.hostname}"),
              user=params.accumulo_user
       )
 

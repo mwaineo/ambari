@@ -54,7 +54,9 @@ zookeeper_host = config['configurations']['accumulo-site']['instance.zookeeper.h
 #accumulo initialization parameters
 accumulo_instance_name = "hdp-accumulo-instance"
 accumulo_root_password = config['configurations']['accumulo-site']['trace.token.property.password']
-accumulo_hdfs_root_dir = config['configurations']['accumulo-site']['instance.volumes']
+#accumulo_hdfs_root_dir = config['configurations']['accumulo-site']['instance.volumes']
+accumulo_hdfs_root_dir = "/accumulo"
+accumulo_hdfs_stage_dir = "/user/accumulo"
 
 accumulo_excluded_hosts = config['commandParams']['excluded_hosts']
 accumulo_included_hosts = config['commandParams']['included_hosts']
