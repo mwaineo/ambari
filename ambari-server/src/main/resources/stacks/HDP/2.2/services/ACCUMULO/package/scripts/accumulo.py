@@ -75,6 +75,18 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
       mode=0644,
       owner=params.accumulo_user
     )
+
+  if name in ["master","tserver"]:
+    params.HdfsDirectory(params.accumulo_hdfs_root_dir,
+                         action="create_delayed",
+                         owner=params.accumulo_user,
+    )
+    params.HdfsDirectory(format("/accumulo"),
+                         action="create_delayed",
+                         owner=params.accumulo_user,
+                         mode=0755
+    )    
+    params.HdfsDirectory(None, action="create")  
   
   accumulo_StaticFile("auditLog.xml")
   accumulo_StaticFile("generic_logger.xml")
@@ -87,19 +99,6 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
   accumulo_StaticFile("masters")
   
   accumulo_TemplateConfig('accumulo-env.sh')
-
-
-  if name in ["master","tserver"]:
-    params.HdfsDirectory(params.accumulo_hdfs_root_dir,
-                         action="create_delayed",
-                         owner=params.accumulo_user,
-    )
-    params.HdfsDirectory(format("/accumulo"),
-                         action="create_delayed",
-                         owner=params.accumulo_user,
-                         mode=0755
-    )    
-    params.HdfsDirectory(None, action="create")    
 
 def accumulo_TemplateConfig(name, 
                          tag=None

@@ -59,4 +59,4 @@ class AccumuloTServer(Script):
 
 
 if __name__ == "__main__":
-  AccumuloMaster().execute()
+  AccumuloTserver().execute()
