@@ -36,7 +36,6 @@ accumulo_cmd = format('/usr/hdp/current/accumulo-client/bin/accumulo')
 
 # user things
 accumulo_user = status_params.accumulo_user
-user_group = config['configurations']['global']['user_group']
 
 #java things
 java64_home = config['hostLevelParams']['java_home']

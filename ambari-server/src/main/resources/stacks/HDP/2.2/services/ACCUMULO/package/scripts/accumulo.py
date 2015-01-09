@@ -28,7 +28,6 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
 
   Directory( params.accumulo_conf_dir,
       owner = params.accumulo_user,
-      group = params.user_group,
       recursive = True
   )
 
@@ -37,7 +36,6 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
             configurations = params.config['configurations']['accumulo-site'],
             configuration_attributes=params.config['configuration_attributes']['accumulo-site'],
             owner = params.accumulo_user,
-            group = params.user_group
   )
   
   XmlConfig("hdfs-site.xml",
@@ -45,7 +43,6 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
             configurations=params.config['configurations']['hdfs-site'],
             configuration_attributes=params.config['configuration_attributes']['hdfs-site'],
             owner=params.hdfs_user,
-            group=params.user_group
     )
 
   if 'accumulo-policy' in params.config['configurations']:
@@ -54,13 +51,11 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
             configurations = params.config['configurations']['accumulo-policy'],
             configuration_attributes=params.config['configuration_attributes']['accumulo-policy'],
             owner = params.accumulo_user,
-            group = params.user_group
     )
   # Manually overriding ownership of file installed by hadoop package
   else: 
     File( format("{params.accumulo_conf_dir}/accumulo-policy.xml"),
       owner = params.accumulo_user,
-      group = params.user_group
     )
   
   if name != "client":
@@ -84,7 +79,6 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
   elif (os.path.exists(format("{params.accumulo_conf_dir}/log4j.properties"))):
     File(format("{params.accumulo_conf_dir}/log4j.properties"),
       mode=0644,
-      group=params.user_group,
       owner=params.accumulo_user
     )
   
@@ -109,7 +103,6 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
     conf_dir = params.conf_dir,
     configurations = configs,
     owner = params.accumulo_user,
-    group = params.user_group,
     mode=0600
   )
 
@@ -127,7 +120,6 @@ def accumulo_TemplateConfig(name,
 
   TemplateConfig( format("{accumulo_conf_dir}/{name}"),
       owner = params.accumulo_user,
-      group = params.user_group,
       template_tag = tag
   )
 
@@ -136,7 +128,6 @@ def accumulo_StaticFile(name):
     
     File(format("{params.accumulo_conf_dir}/{name}"),
       mode=0644,
-      group=params.user_group,
       owner=params.accumulo_user,
       content=StaticFile(name)
     )
