@@ -72,7 +72,8 @@ else:
   log4j_props = None
 
 #for create_hdfs_directory
-hostname = config["hostname"]
+#hostname = config["hostname"]
+hostname = "localhost:
 hdfs_user_keytab = config['configurations']['hadoop-env']['hdfs_user_keytab']
 hdfs_user = config['configurations']['hadoop-env']['hdfs_user']
 hdfs_principal_name = config['configurations']['hadoop-env']['hdfs_principal_name']
