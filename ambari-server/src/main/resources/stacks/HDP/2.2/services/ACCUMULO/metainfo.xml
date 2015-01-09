@@ -88,28 +88,6 @@ key/value pairs at various points in the data management process.
             <script>scripts/accumulo_client.py</script>
             <scriptType>PYTHON</scriptType>
           </commandScript>
-          <configFiles>
-            <configFile>
-              <type>xml</type>
-              <fileName>accumulo-site.xml</fileName>
-              <dictionaryName>accumulo-site</dictionaryName>
-            </configFile>
-            <configFile>
-              <type>env</type>
-              <fileName>accumulo-env.sh</fileName>
-              <dictionaryName>accumulo-env</dictionaryName>
-            </configFile>          
-            <configFile>
-              <type>env</type>
-              <fileName>accumulo.policy</fileName>
-              <dictionaryName>accumulo-policy</dictionaryName>
-            </configFile>        
-            <configFile>
-              <type>env</type>
-              <fileName>log4j.properties</fileName>
-              <dictionaryName>accumulo-log4j</dictionaryName>
-            </configFile>            
-          </configFiles>
         </component>
       </components>
       
@@ -134,6 +112,29 @@ key/value pairs at various points in the data management process.
         <service>ZOOKEEPER</service>
         <service>HDFS</service>
       </requiredServices>
+
+      <configFiles>
+        <configFile>
+          <type>xml</type>
+          <fileName>accumulo-site.xml</fileName>
+          <dictionaryName>accumulo-site</dictionaryName>
+        </configFile>
+        <configFile>
+          <type>env</type>
+          <fileName>accumulo-env.sh</fileName>
+          <dictionaryName>accumulo-env</dictionaryName>
+        </configFile>          
+        <configFile>
+          <type>env</type>
+          <fileName>accumulo.policy</fileName>
+          <dictionaryName>accumulo-policy</dictionaryName>
+        </configFile>        
+        <configFile>
+          <type>env</type>
+          <fileName>log4j.properties</fileName>
+          <dictionaryName>accumulo-log4j</dictionaryName>
+        </configFile>            
+      </configFiles>
 
       <configuration-dependencies>
         <config-type>accumulo-env</config-type>

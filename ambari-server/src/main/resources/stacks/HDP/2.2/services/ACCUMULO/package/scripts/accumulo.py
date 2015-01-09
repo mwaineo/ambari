@@ -39,8 +39,6 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
             mode = 0600
   )
 
-  accumulo_TemplateConfig( 'accumulo-env.sh')
-
   XmlConfig("hdfs-site.xml",
             conf_dir=params.hadoop_conf_dir,
             configurations=params.config['configurations']['hdfs-site'],
@@ -88,8 +86,8 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
   accumulo_StaticFile("slaves")
   accumulo_StaticFile("masters")
   
-  configs = params.config['configurations']['accumulo-site']
-  
+  accumulo_TemplateConfig( 'accumulo-env.sh')
+
 
   if name in ["master","tserver"]:
     params.HdfsDirectory(params.accumulo_hdfs_root_dir,
