@@ -49,7 +49,7 @@ accumulo_env_sh_template = config['configurations']['accumulo-env']['content']
 
 #accumulo initialization parameters
 accumulo_instance_name = "hdp-accumulo-instance"
-accumulo_root_password = config['configurations']['global']['accumulo_root_password']
+accumulo_root_password = config['configurations']['accumulo-site']['trace.token.property.password']
 accumulo_hdfs_root_dir = config['configurations']['accumulo-site']['instance.volumes']
 
 accumulo_excluded_hosts = config['commandParams']['excluded_hosts']
