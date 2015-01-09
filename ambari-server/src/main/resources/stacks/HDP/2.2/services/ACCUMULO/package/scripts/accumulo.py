@@ -91,10 +91,9 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
 
   if name in ["master","tserver"]:
     params.HdfsDirectory(params.accumulo_hdfs_root_dir,
-                         action="create_delayed",
+                         action="create",
                          owner=params.accumulo_user
     )
-    params.HdfsDirectory(None, action="create")
 
 def accumulo_TemplateConfig(name, 
                          tag=None
