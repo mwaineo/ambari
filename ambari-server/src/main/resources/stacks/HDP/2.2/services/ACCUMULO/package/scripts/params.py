@@ -28,7 +28,6 @@ security_enabled = config['configurations']['cluster-env']['security_enabled']
 # local structure
 log_dir = config['configurations']['accumulo-env']['accumulo_log_dir']
 accumulo_conf_dir = "/etc/accumulo/conf"
-hadoop_conf_dir = "/etc/hadoop/conf"
 hadoop_bin_dir = format("/usr/hdp/current/hadoop-client/bin")
 daemon_script_start = format('/usr/hdp/current/accumulo-client/bin/start-server.sh')
 daemon_script_stop = format('/usr/hdp/current/accumulo-client/bin/stop-here.sh')

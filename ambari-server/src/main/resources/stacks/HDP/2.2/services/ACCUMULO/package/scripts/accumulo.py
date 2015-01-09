@@ -101,7 +101,7 @@ def accumulo_TemplateConfig(name,
                          ):
   import params
 
-  TemplateConfig( format("{accumulo_conf_dir}/{name}"),
+  TemplateConfig( format("{params.accumulo_conf_dir}/{name}"),
       owner = params.accumulo_user,
       template_tag = tag
   )
