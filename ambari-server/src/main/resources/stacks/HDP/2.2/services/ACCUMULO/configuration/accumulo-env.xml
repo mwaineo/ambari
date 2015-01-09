@@ -26,7 +26,32 @@
     <value>/var/log/accumulo</value>
     <description>Log Directories for Accumulo.</description>
   </property>
-
+  <property>
+    <name>accumulo_master_opts</name>
+    <value>128m</value>
+    <description>Log Directories for Accumulo.</description>
+  </property>
+  <property>
+    <name>accumulo_tserver_opts</name>
+    <value>128m</value>
+    <description>Log Directories for Accumulo.</description>
+  </property>
+  <property>
+    <name>accumulo_monitor_opts</name>
+    <value>64m</value>
+    <description>Log Directories for Accumulo.</description>
+  </property>
+  <property>
+    <name>accumulo_gc_opts</name>
+    <value>64m</value>
+    <description>Log Directories for Accumulo.</description>
+  </property>
+  <property>
+    <name>accumulo_other_opts</name>
+    <value>128m</value>
+    <description>Log Directories for Accumulo.</description>
+  </property>
+  
   <!-- accumulo-env.sh -->
   <property>
     <name>content</name>
