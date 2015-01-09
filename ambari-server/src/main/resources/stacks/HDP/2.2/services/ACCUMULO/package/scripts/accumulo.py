@@ -36,6 +36,11 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
             configurations = params.config['configurations']['accumulo-site'],
             configuration_attributes=params.config['configuration_attributes']['accumulo-site'],
             owner = params.accumulo_user,
+            mode = 0600
+  )
+  File(format("{accumulo_conf_dir}/accumulo-env.sh"),
+       owner = params.accumulo_user,
+       content=InlineTemplate(params.accumulo_env_sh_template)
   )
   
   XmlConfig("hdfs-site.xml",
@@ -75,11 +80,6 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
       owner=params.accumulo_user
     )
   
-  File(format("{accumulo_conf_dir}/accumulo-env.sh"),
-       owner = params.accumulo_user,
-       content=InlineTemplate(params.accumulo_env_sh_template)
-  )  
-  
   accumulo_StaticFile("auditLog.xml")
   accumulo_StaticFile("generic_logger.xml")
   accumulo_StaticFile("monitor_logger.xml")
@@ -92,12 +92,6 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
   
   configs = params.config['configurations']['accumulo-site']
   
-  XmlConfig( "accumulo-site.xml",
-    conf_dir = params.conf_dir,
-    configurations = configs,
-    owner = params.accumulo_user,
-    mode=0600
-  )
 
   if name in ["master","tserver"]:
     params.HdfsDirectory(params.accumulo_hdfs_root_dir,
