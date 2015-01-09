@@ -38,11 +38,9 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
             owner = params.accumulo_user,
             mode = 0600
   )
-  File(format("{accumulo_conf_dir}/accumulo-env.sh"),
-       owner = params.accumulo_user,
-       content=InlineTemplate(params.accumulo_env_sh_template)
-  )
-  
+
+  accumulo_TemplateConfig( 'accumulo-env.sh')
+
   XmlConfig("hdfs-site.xml",
             conf_dir=params.hadoop_conf_dir,
             configurations=params.config['configurations']['hdfs-site'],
