@@ -34,6 +34,9 @@ class AccumuloClient(Script):
     
     accumulo(name='client')
 
+  def stop(self, env):
+    pass
+
   def status(self, env):
     pass
 
