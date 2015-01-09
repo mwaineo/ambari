@@ -86,15 +86,19 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
   accumulo_StaticFile("slaves")
   accumulo_StaticFile("masters")
   
-  accumulo_TemplateConfig( 'accumulo-env.sh')
+  accumulo_TemplateConfig('accumulo-env.sh')
 
 
   if name in ["master","tserver"]:
     params.HdfsDirectory(params.accumulo_hdfs_root_dir,
                          action="create_delayed",
                          owner=params.accumulo_user,
-                         mode=0755
     )
+    params.HdfsDirectory(format("/accumulo"),
+                         action="create_delayed",
+                         owner=params.accumulo_user,
+                         mode=0755
+    )    
     params.HdfsDirectory(None, action="create")    
 
 def accumulo_TemplateConfig(name, 
