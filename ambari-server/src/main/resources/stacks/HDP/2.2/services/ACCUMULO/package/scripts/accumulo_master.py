@@ -39,7 +39,7 @@ class AccumuloMaster(Script):
 
     try:
       Execute( exec_string,
-             not_if=format("{params.hadoop_prefix}/bin/hadoop fs -stat {params.accumulo_hdfs_root_dir"),
+             not_if=format("{params.hadoop_prefix}/bin/hadoop fs -stat {params.accumulo_hdfs_root_dir}"),
              user=params.accumulo_user)
     except Exception, e:
       try:
