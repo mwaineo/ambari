@@ -23,6 +23,8 @@ import status_params
 
 config = Script.get_config()
 
+security_enabled = config['configurations']['cluster-env']['security_enabled']
+
 # local structure
 log_dir = config['configurations']['accumulo-env']['accumulo_log_dir']
 accumulo_conf_dir = "/etc/accumulo/conf"

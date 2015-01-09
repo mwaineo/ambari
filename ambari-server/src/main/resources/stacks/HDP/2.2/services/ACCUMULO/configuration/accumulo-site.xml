@@ -29,12 +29,12 @@
 
   <property>
     <name>general.kerberos.principal</name>
-    <value></value>
+    <value>*</value>
     <description>Name of the kerberos principal to use.</description>
   </property>
   <property>
     <name>general.kerberos.keytab</name>
-    <value></value>
+    <value>*</value>
     <description>Path to the kerberos keytab to use.</description>
   </property>
   <property>
