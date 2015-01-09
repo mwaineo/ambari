@@ -29,27 +29,27 @@
   <property>
     <name>accumulo_master_opts</name>
     <value>128m</value>
-    <description>Log Directories for Accumulo.</description>
+    <description>Accumulo Master JVM Options</description>
   </property>
   <property>
     <name>accumulo_tserver_opts</name>
     <value>128m</value>
-    <description>Log Directories for Accumulo.</description>
+    <description>Accumulo Tablet Server JVM Options</description>
   </property>
   <property>
     <name>accumulo_monitor_opts</name>
     <value>64m</value>
-    <description>Log Directories for Accumulo.</description>
+    <description>Accumulo Monitor JVM Options</description>
   </property>
   <property>
     <name>accumulo_gc_opts</name>
     <value>64m</value>
-    <description>Log Directories for Accumulo.</description>
+    <description>Accumulo Garbage Collection JVM Options</description>
   </property>
   <property>
     <name>accumulo_other_opts</name>
     <value>128m</value>
-    <description>Log Directories for Accumulo.</description>
+    <description>Other JVM Options</description>
   </property>
   
   <!-- accumulo-env.sh -->
