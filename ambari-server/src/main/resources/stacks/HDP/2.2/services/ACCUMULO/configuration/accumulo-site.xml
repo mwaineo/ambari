@@ -86,11 +86,6 @@
     <name>trace.user</name>
     <value>root</value>
   </property>
-
-  <property>
-    <name>trace.token.property.password</name>
-    <value>password</value>
-  </property>
   
   <property>
     <name>tserver.sort.buffer.size</name>
