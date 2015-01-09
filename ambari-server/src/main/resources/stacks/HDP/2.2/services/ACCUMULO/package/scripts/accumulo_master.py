@@ -33,9 +33,12 @@ class AccumuloMaster(Script):
     env.set_params(params)
     
     accumulo(name='master')
+    
+    #./accumulo init --instance-name hdp-accumulo-instance --password hadoop --clear-instance-name >/var/log/accumulo/accumulo-root-init.out 2>/var/log//accumulo/accumulo-root-init.err
+    exec_string = format("{params.accumulo_cmd} init --instance-name {params.accumulo_instance_name} --password {params.accumulo_root_password} --clear-instance-name >{params.log_dir}/accumulo-{params.accumulo_user}-init.out 2>{params.log_dir}/accumulo-{params.accumulo_user}-init.err")
 
     try:
-      Execute( format("{params.daemon_script} init --instance-name {params.accumulo_instance_name} --password {params.accumulo_root_password} --clear-instance-name >{params.log_dir}/accumulo-{params.accumulo_user}-init.out 2>{params.log_dir}/accumulo-{params.accumulo_user}-init.err"),
+      Execute( exec_string,
              not_if=format("{params.hadoop_prefix}/bin/hadoop fs -stat {params.accumulo_hdfs_root_dir"),
              user=params.accumulo_user)
     except Exception, e:
@@ -51,13 +54,13 @@ class AccumuloMaster(Script):
       env.set_params(params)
       self.configure(env)
       
-      Execute(format("{params.daemon_script} {params.hostname} master"),
+      Execute(format("{params.daemon_script_start} {params.hostname} master"),
              user=params.accumulo_user
       )
-      Execute(format("{params.daemon_script} {params.hostname} monitor"),
+      Execute(format("{params.daemon_script_start} {params.hostname} monitor"),
              user=params.accumulo_user
       )
-      Execute(format("{params.daemon_script} {params.hostname} gc"),
+      Execute(format("{params.daemon_script_start} {params.hostname} gc"),
              user=params.accumulo_user
       )
       

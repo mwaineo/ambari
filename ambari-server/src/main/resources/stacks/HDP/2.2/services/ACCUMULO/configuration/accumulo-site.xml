@@ -98,7 +98,7 @@
   </property>
  <property>
     <name>instance.volumes</name>
-    <value>hdfs://localhost:8020/accumulo</value>
+    <value>hdfs://sandbox.hortonworks.com:8020/accumulo</value>
  </property>
   <property>
     <name>general.classpaths</name>
