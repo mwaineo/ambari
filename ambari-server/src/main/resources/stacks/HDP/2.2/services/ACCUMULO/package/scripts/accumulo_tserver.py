@@ -39,18 +39,18 @@ class AccumuloTServer(Script):
       env.set_params(params)
       self.configure(env)
       
-      Execute(format("{daemon_script_start} tserver"),
+      Execute(format("{params.daemon_script_start} {params.hostname} tserver"),
              user=params.accumulo_user
       )
-      Execute(format("{daemon_script_start} tracer"),
+      Execute(format("{params.daemon_script_start} {params.hostname} tracer"),
              user=params.accumulo_user
-      )      
+      )  
       
   def stop(self, env):
       import params
       env.set_params(params)
 
-      Execute(format("{daemon_script_stop} {params.hostname}"),
+      Execute(format("{params.daemon_script_stop} {params.hostname}"),
              user=params.accumulo_user
       )
 
