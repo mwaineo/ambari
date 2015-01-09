@@ -58,10 +58,10 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
       owner = params.accumulo_user,
     )
   
-  Directory (params.log_dir,
-    owner = params.accumulo_user,
-    recursive = True
-  )
+  #Directory (params.log_dir,
+  #  owner = params.accumulo_user,
+  #  recursive = True
+  #)
 
   if (params.log4j_props != None):
     File(format("{params.accumulo_conf_dir}/log4j.properties"),

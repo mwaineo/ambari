@@ -123,21 +123,21 @@ key/value pairs at various points in the data management process.
           </packages>
         </osSpecific>
       </osSpecifics>
-
+<!--
       <commandScript>
         <script>scripts/service_check.py</script>
         <scriptType>PYTHON</scriptType>
         <timeout>300</timeout>
       </commandScript>
-      
+-->      
       <requiredServices>
         <service>ZOOKEEPER</service>
         <service>HDFS</service>
       </requiredServices>
 
       <configuration-dependencies>
-        <config-type>accumulo-site</config-type>
         <config-type>accumulo-env</config-type>
+        <config-type>accumulo-site</config-type>
         <config-type>accumulo-log4j</config-type>
 <!--        <config-type>accumulo-policy</config-type> -->
       </configuration-dependencies>
