@@ -23,7 +23,7 @@
 
   <property>
     <name>instance.zookeeper.host</name>
-    <value></value>
+    <value>localhost:2181</value>
     <description>comma separated list of zookeeper servers</description>
   </property>
 
