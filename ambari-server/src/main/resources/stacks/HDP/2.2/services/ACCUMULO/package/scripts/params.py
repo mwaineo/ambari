@@ -42,7 +42,6 @@ java64_home = config['hostLevelParams']['java_home']
 hadoop_prefix = config['configurations']['accumulo-env']['hadoop_prefix']
 hadoop_conf_dir = config['configurations']['accumulo-env']['hadoop_conf_dir']
 zookeeper_home = config['configurations']['accumulo-env']['zookeeper_home']
-zookeeper_host = config['configurations']['accumulo-site']['instance.zookeeper.host']
 master_heapsize = config['configurations']['accumulo-env']['master_heapsize']
 tserver_heapsize = config['configurations']['accumulo-env']['tserver_heapsize']
 monitor_heapsize = config['configurations']['accumulo-env']['monitor_heapsize']
@@ -51,6 +50,7 @@ other_heapsize = config['configurations']['accumulo-env']['other_heapsize']
 env_sh_template = config['configurations']['accumulo-env']['content']
 
 accumulo_env_sh_template = config['configurations']['accumulo-env']['content']
+zookeeper_host = config['configurations']['accumulo-site']['instance.zookeeper.host']
 
 #accumulo initialization parameters
 accumulo_instance_name = "hdp-accumulo-instance"
