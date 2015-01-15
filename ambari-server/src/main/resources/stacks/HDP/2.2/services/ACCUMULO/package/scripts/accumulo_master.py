@@ -34,7 +34,6 @@ class AccumuloMaster(Script):
     
     accumulo(name='master')
     
-    #./accumulo init --instance-name hdp-accumulo-instance --password hadoop --clear-instance-name >/var/log/accumulo/accumulo-root-init.out 2>/var/log//accumulo/accumulo-root-init.err
     exec_string = format("{params.accumulo_cmd} init --instance-name {params.accumulo_instance_name} --password {params.accumulo_root_password} --clear-instance-name >{params.log_dir}/accumulo-{params.accumulo_user}-init.out 2>{params.log_dir}/accumulo-{params.accumulo_user}-init.err")
 
     try:

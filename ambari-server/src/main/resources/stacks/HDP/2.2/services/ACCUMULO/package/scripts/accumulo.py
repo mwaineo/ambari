@@ -53,16 +53,15 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
             configuration_attributes=params.config['configuration_attributes']['accumulo-policy'],
             owner = params.accumulo_user,
     )
-  # Manually overriding ownership of file installed by hadoop package
   else: 
     File( format("{params.accumulo_conf_dir}/accumulo-policy.xml"),
       owner = params.accumulo_user,
     )
   
-  #Directory (params.log_dir,
-  #  owner = params.accumulo_user,
-  #  recursive = True
-  #)
+  Directory (params.log_dir,
+    owner = params.accumulo_user,
+    recursive = True
+  )
 
   if (params.log4j_props != None):
     File(format("{params.accumulo_conf_dir}/log4j.properties"),
@@ -95,10 +94,12 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
   accumulo_StaticFile("tracers")
   accumulo_StaticFile("gc")
   accumulo_StaticFile("monitor")
-  accumulo_StaticFile("slaves")
-  accumulo_StaticFile("masters")
+#  accumulo_StaticFile("slaves")
+#  accumulo_StaticFile("masters")
   
   accumulo_TemplateConfig('accumulo-env.sh')
+  accumulo_TemplateConfig('slaves')
+  accumulo_TemplateConfig('masters')
 
 def accumulo_TemplateConfig(name, 
                          tag=None
