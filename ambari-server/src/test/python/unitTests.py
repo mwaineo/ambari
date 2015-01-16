@@ -28,8 +28,8 @@ import fnmatch
 STACK_EXCLUDE = ["utils"]
 SERVICE_EXCLUDE = ["configs"]
 
-TEST_MASK = '[Tt]est_accumulo_client*.py'
-CUSTOM_TEST_MASK = '_[Tt]est_accumulo_client*.py'
+TEST_MASK = '[Tt]est*.py'
+CUSTOM_TEST_MASK = '_[Tt]est*.py'
 def get_parent_path(base, directory_name):
   """
   Returns absolute path for directory_name, if directory_name present in base.

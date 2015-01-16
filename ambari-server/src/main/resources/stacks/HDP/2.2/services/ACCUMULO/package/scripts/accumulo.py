@@ -91,11 +91,10 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
   accumulo_StaticFile("generic_logger.xml")
   accumulo_StaticFile("monitor_logger.xml")
   accumulo_StaticFile("accumulo-metrics.xml")
+  
   accumulo_StaticFile("tracers")
   accumulo_StaticFile("gc")
   accumulo_StaticFile("monitor")
-#  accumulo_StaticFile("slaves")
-#  accumulo_StaticFile("masters")
   
   accumulo_TemplateConfig('accumulo-env.sh')
   accumulo_TemplateConfig('slaves')
