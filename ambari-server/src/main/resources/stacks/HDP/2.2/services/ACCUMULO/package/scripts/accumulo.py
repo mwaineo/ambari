@@ -95,10 +95,10 @@ def accumulo(name=None # 'master' or 'tserver' or 'client'
   accumulo_StaticFile("tracers")
   accumulo_StaticFile("gc")
   accumulo_StaticFile("monitor")
+  accumulo_StaticFile('slaves')
+  accumulo_StaticFile('masters')
   
   accumulo_TemplateConfig('accumulo-env.sh')
-  accumulo_TemplateConfig('slaves')
-  accumulo_TemplateConfig('masters')
 
 def accumulo_TemplateConfig(name, 
                          tag=None

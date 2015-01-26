@@ -61,11 +61,12 @@ accumulo_hdfs_stage_dir = "/user/accumulo"
 accumulo_excluded_hosts = config['commandParams']['excluded_hosts']
 accumulo_included_hosts = config['commandParams']['included_hosts']
 
+# TODO accumulo_ts_hosts is not defined in clusterHostInfo
 # if accumulo is selected the accumulo_ts_hosts, should not be empty, but still default just in case
-if 'slave_hosts' in config['clusterHostInfo']:
-  ts_hosts = default('/clusterHostInfo/accumulo_ts_hosts', '/clusterHostInfo/slave_hosts') #if accumulo_ts_hosts not given it is assumed that tservers on same nodes as slaves
-else:
-  ts_hosts = default('/clusterHostInfo/accumulo_ts_hosts', '/clusterHostInfo/all_hosts') 
+#if 'slave_hosts' in config['clusterHostInfo']:
+#  ts_hosts = default('/clusterHostInfo/accumulo_ts_hosts', '/clusterHostInfo/slave_hosts') #if accumulo_ts_hosts not given it is assumed that tservers on same nodes as slaves
+#else:
+#  ts_hosts = default('/clusterHostInfo/accumulo_ts_hosts', '/clusterHostInfo/all_hosts') 
 
 #log4j.properties
 if (('accumulo-log4j' in config['configurations']) and ('content' in config['configurations']['accumulo-log4j'])):
