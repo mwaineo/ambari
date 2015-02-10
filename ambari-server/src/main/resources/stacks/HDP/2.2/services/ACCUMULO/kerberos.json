@@ -1,0 +1,43 @@
+{
+  "services": [
+    {
+      "name": "ACCUMULO",
+      "components": [
+        {
+          "name": "ACCUMULO_SERVICE",
+          "identities": [
+            {
+              "name": "accumulo_principal",
+              "principal": {
+                "value": "${accumulo-env/accumulo_user}/_HOST@${realm}",
+                "type" : "service",
+                "configuration": "accumulo-site/general.kerberos.principal",
+                "local_username": "${accumulo-env/accumulo_user}"
+
+              },
+              "keytab": {
+                "file": "${keytab_dir}/accumulo.service.keytab",
+                "owner": {
+                  "name": "${accumulo-env/accumulo_user}",
+                  "access": "r"
+                },
+                "group": {
+                  "name": "${cluster-env/user_group}",
+                  "access": ""
+                },
+                "configuration": "accumulo-site/general.kerberos.keytab"
+              }
+            }
+          ],
+          "configurations": [
+            {
+              "accumulo-site": {
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+

@@ -18,45 +18,13 @@ limitations under the License.
 
 """
 
-import sys
 from resource_management import *
 
-from accumulo import accumulo
-         
-class AccumuloTServer(Script):
-  def install(self, env):
-    self.install_packages(env)
-    self.configure(env)
-    
-  def configure(self, env):
+class AccumuloServiceCheck(Script):
+  def service_check(self, env):
     import params
     env.set_params(params)
-    
-    accumulo(name='tserver')
-
-  def start(self, env):
-      import params
-      env.set_params(params)
-      self.configure(env)
-      
-      Execute(format("{params.daemon_script_start} {params.hostname} tserver"),
-             user=params.accumulo_user
-      )
-      Execute(format("{params.daemon_script_start} {params.hostname} tracer"),
-             user=params.accumulo_user
-      )  
-      
-  def stop(self, env):
-      import params
-      env.set_params(params)
-
-      Execute(format("{params.daemon_script_stop} {params.hostname}"),
-             user=params.accumulo_user
-      )
-
-  def status(self, env):
-    pass
 
 
 if __name__ == "__main__":
-  AccumuloTServer().execute()
+  AccumuloServiceCheck().execute()

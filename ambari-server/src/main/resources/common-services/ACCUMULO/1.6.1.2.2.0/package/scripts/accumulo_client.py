@@ -20,7 +20,26 @@ limitations under the License.
 
 from resource_management import *
 
-config = Script.get_config()
+from accumulo_configuration import setup_conf_dir
 
-trace_user = config['configurations']['accumulo-site']['trace.user']
-accumulo_user = 'root'
+
+class AccumuloClient(Script):
+  def get_stack_to_component(self):
+    return {"HDP": "accumulo-client"}
+
+  def install(self, env):
+    self.install_packages(env)
+    self.configure(env)
+
+  def configure(self, env):
+    import params
+    env.set_params(params)
+
+    setup_conf_dir(name='client')
+
+  def status(self, env):
+    raise ClientComponentHasNoStatus()
+
+
+if __name__ == "__main__":
+  AccumuloClient().execute()

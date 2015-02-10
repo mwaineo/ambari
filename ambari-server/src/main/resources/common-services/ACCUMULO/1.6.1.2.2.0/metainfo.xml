@@ -21,11 +21,7 @@
     <service>
       <name>ACCUMULO</name>
       <displayName>Accumulo</displayName>
-      <comment>Apache Accumulo is a sorted, distributed key/value store based on Google's 
-BigTable design. It is built on top of Apache Hadoop, Zookeeper, and Thrift. It 
-features a few novel improvements on the BigTable design in the form of 
-cell-level access labels and a server-side programming mechanism that can modify
-key/value pairs at various points in the data management process.
+      <comment>Robust, scalable, high performance distributed key/value store.
       </comment>
       <version>1.6.1.2.2.0</version>
       <components>
@@ -56,21 +52,35 @@ key/value pairs at various points in the data management process.
             <scriptType>PYTHON</scriptType>
             <timeout>600</timeout>
           </commandScript>
-<!--          <customCommands>
-            <customCommand>
-              <name>DECOMMISSION</name>
-              <commandScript>
-                <script>scripts/accumulo_master.py</script>
-                <scriptType>PYTHON</scriptType>
-                <timeout>600</timeout>
-              </commandScript>
-            </customCommand>
-          </customCommands> -->
+        </component>
+
+        <component>
+          <name>ACCUMULO_MONITOR</name>
+          <displayName>Accumulo Monitor</displayName>
+          <category>MASTER</category>
+          <cardinality>1</cardinality>
+          <commandScript>
+            <script>scripts/accumulo_monitor.py</script>
+            <scriptType>PYTHON</scriptType>
+            <timeout>600</timeout>
+          </commandScript>
+        </component>
+
+        <component>
+          <name>ACCUMULO_GC</name>
+          <displayName>Accumulo GC</displayName>
+          <category>MASTER</category>
+          <cardinality>1</cardinality>
+          <commandScript>
+            <script>scripts/accumulo_gc.py</script>
+            <scriptType>PYTHON</scriptType>
+            <timeout>600</timeout>
+          </commandScript>
         </component>
 
         <component>
           <name>ACCUMULO_TSERVER</name>
-          <displayName>TServer</displayName>
+          <displayName>Accumulo TServer</displayName>
           <category>SLAVE</category>
           <cardinality>1+</cardinality>
           <commandScript>
@@ -78,7 +88,7 @@ key/value pairs at various points in the data management process.
             <scriptType>PYTHON</scriptType>
           </commandScript>
         </component>
-        
+
         <component>
           <name>ACCUMULO_CLIENT</name>
           <displayName>Accumulo Client</displayName>
@@ -88,9 +98,21 @@ key/value pairs at various points in the data management process.
             <script>scripts/accumulo_client.py</script>
             <scriptType>PYTHON</scriptType>
           </commandScript>
+          <configFiles>
+            <configFile>
+              <type>xml</type>
+              <fileName>accumulo-site.xml</fileName>
+              <dictionaryName>accumulo-site</dictionaryName>
+            </configFile>
+            <configFile>
+              <type>env</type>
+              <fileName>accumulo-env.sh</fileName>
+              <dictionaryName>accumulo-env</dictionaryName>
+            </configFile>
+          </configFiles>
         </component>
       </components>
-      
+
       <osSpecifics>
         <osSpecific>
           <osFamily>any</osFamily>
@@ -101,46 +123,21 @@ key/value pairs at various points in the data management process.
           </packages>
         </osSpecific>
       </osSpecifics>
-<!--
+
       <commandScript>
         <script>scripts/service_check.py</script>
         <scriptType>PYTHON</scriptType>
         <timeout>300</timeout>
       </commandScript>
--->      
+
       <requiredServices>
         <service>ZOOKEEPER</service>
         <service>HDFS</service>
       </requiredServices>
 
-      <configFiles>
-        <configFile>
-          <type>xml</type>
-          <fileName>accumulo-site.xml</fileName>
-          <dictionaryName>accumulo-site</dictionaryName>
-        </configFile>
-        <configFile>
-          <type>env</type>
-          <fileName>accumulo-env.sh</fileName>
-          <dictionaryName>accumulo-env</dictionaryName>
-        </configFile>          
-        <configFile>
-          <type>env</type>
-          <fileName>accumulo.policy</fileName>
-          <dictionaryName>accumulo-policy</dictionaryName>
-        </configFile>        
-        <configFile>
-          <type>env</type>
-          <fileName>log4j.properties</fileName>
-          <dictionaryName>accumulo-log4j</dictionaryName>
-        </configFile>            
-      </configFiles>
-
       <configuration-dependencies>
         <config-type>accumulo-env</config-type>
         <config-type>accumulo-site</config-type>
-        <config-type>accumulo-log4j</config-type>
-<!--        <config-type>accumulo-policy</config-type> -->
       </configuration-dependencies>
 
     </service>

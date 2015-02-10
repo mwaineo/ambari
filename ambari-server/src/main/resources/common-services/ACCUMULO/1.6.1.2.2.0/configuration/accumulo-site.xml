@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -15,11 +16,16 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
 <configuration>
   <!-- Put your site-specific accumulo configurations here. The available configuration values along with their defaults are documented in docs/config.html Unless
     you are simply testing at your workstation, you will most definitely need to change the three entries below. -->
+
+  <property>
+    <name>instance.volumes</name>
+    <value>hdfs://localhost:8020/apps/accumulo/data</value>
+    <description>location of accumulo data files in HDFS</description>
+  </property>
 
   <property>
     <name>instance.zookeeper.host</name>
@@ -28,27 +34,37 @@
   </property>
 
   <property>
+    <name>instance.zookeeper.timeout</name>
+    <value>30s</value>
+    <description>timeout for zookeeper connections</description>
+  </property>
+
+  <property>
     <name>general.kerberos.principal</name>
     <value>*</value>
     <description>Name of the kerberos principal to use.</description>
   </property>
+
   <property>
     <name>general.kerberos.keytab</name>
     <value>*</value>
     <description>Path to the kerberos keytab to use.</description>
   </property>
+
   <property>
-    <name>logger.dir.walog</name>
-    <value>walogs</value>
-    <description>The property only needs to be set if upgrading from 1.4 which used to store write-ahead logs on the local
-      filesystem. In 1.5 write-ahead logs are stored in DFS.  When 1.5 is started for the first time it will copy any 1.4
-      write ahead logs into DFS.  It is possible to specify a comma-separated list of directories.
-    </description>
+    <name>instance.rpc.ssl.enabled</name>
+    <value>false</value>
   </property>
 
   <property>
+    <name>instance.rpc.ssl.clientAuth</name>
+    <value>false</value>
+  </property>
+
+  <property require-input="true">
     <name>instance.secret</name>
-    <value>NOTDEFAULT</value>
+    <value></value>
+    <property-type>PASSWORD</property-type>
     <description>A secret unique to a given instance that all servers must know in order to communicate with one another.
       Change it before initialization. To
       change it later use ./bin/accumulo org.apache.accumulo.server.util.ChangeSecret --old [oldpasswd] --new [newpasswd],
@@ -77,29 +93,45 @@
   </property>
 
   <property>
-    <name>trace.token.property.password</name>
-    <!-- change this to the root user's password, and/or change the user below -->
-    <value>hadoop</value>
-  </property>
-
-  <property>
-    <name>trace.user</name>
-    <value>root</value>
-  </property>
-  
-  <property>
     <name>tserver.sort.buffer.size</name>
     <value>50M</value>
   </property>
 
   <property>
     <name>tserver.walog.max.size</name>
-    <value>100M</value>
+    <value>40M</value>
   </property>
- <property>
-    <name>instance.volumes</name>
-    <value>hdfs://sandbox.hortonworks.com:8020/accumulo</value>
- </property>
+
+  <property>
+    <name>master.port.client</name>
+    <value>9999</value>
+  </property>
+
+  <property>
+    <name>trace.port.client</name>
+    <value>12234</value>
+  </property>
+
+  <property>
+    <name>tserver.port.client</name>
+    <value>9997</value>
+  </property>
+
+  <property>
+    <name>gc.port.client</name>
+    <value>50091</value>
+  </property>
+
+  <property>
+    <name>monitor.port.client</name>
+    <value>50095</value>
+  </property>
+
+  <property>
+    <name>monitor.port.log4j</name>
+    <value>4560</value>
+  </property>
+
   <property>
     <name>general.classpaths</name>
     <value>

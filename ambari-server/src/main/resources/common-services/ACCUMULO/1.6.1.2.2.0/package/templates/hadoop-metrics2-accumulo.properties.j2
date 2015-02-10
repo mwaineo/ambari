@@ -16,5 +16,7 @@
 # limitations under the License.
 #}
 
-{% for host in ts_hosts %}{{host}}
-{% endfor %}
+collector={{metric_collector_host}}:8188
+collectionFrequency=60000
+maxRowCacheSize=10000
+sendInterval=59000

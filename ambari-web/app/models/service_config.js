@@ -316,6 +316,10 @@ App.ServiceConfigProperty = Em.Object.extend({
         var nnHost = masterComponentHostsInDB.filterProperty('component', 'NAMENODE').mapProperty('hostName');
         this.setDefaultValue(hostWithPrefix,'://' + nnHost);
         break;
+      case 'instance.volumes':
+        var nnHost = masterComponentHostsInDB.filterProperty('component', 'NAMENODE').mapProperty('hostName');
+        this.setDefaultValue(hostWithPrefix,'://' + nnHost);
+        break;
       case 'snamenode_host':
         // Secondary NameNode does not exist when NameNode HA is enabled
         var snn = masterComponentHostsInDB.findProperty('component', 'SECONDARY_NAMENODE');
@@ -540,6 +544,12 @@ App.ServiceConfigProperty = Em.Object.extend({
         break;
       case 'hbase.zookeeper.quorum':
         if (this.get('filename') == 'hbase-site.xml') {
+          var zkHosts = masterComponentHostsInDB.filterProperty('component', 'ZOOKEEPER_SERVER').mapProperty('hostName');
+          this.setDefaultValue("(\\w*)", zkHosts);
+        }
+        break;
+      case 'instance.zookeeper.host':
+        if (this.get('filename') == 'accumulo-site.xml') {
           var zkHosts = masterComponentHostsInDB.filterProperty('component', 'ZOOKEEPER_SERVER').mapProperty('hostName');
           this.setDefaultValue("(\\w*)", zkHosts);
         }

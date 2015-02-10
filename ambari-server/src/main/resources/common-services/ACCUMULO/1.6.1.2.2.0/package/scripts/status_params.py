@@ -18,24 +18,9 @@ limitations under the License.
 
 """
 
-import sys
 from resource_management import *
 
-from accumulo import accumulo
-         
-class AccumuloClient(Script):
-  def install(self, env):
-    self.install_packages(env)
-    self.configure(env)
-    
-  def configure(self, env):
-    import params
-    env.set_params(params)
-    
-    accumulo(name='client')
+config = Script.get_config()
 
-  def status(self, env):
-    raise ClientComponentHasNoStatus()
-
-if __name__ == "__main__":
-  AccumuloClient().execute()
+pid_dir = config['configurations']['accumulo-env']['accumulo_pid_dir']
+accumulo_user = config['configurations']['accumulo-env']['accumulo_user']

@@ -19,28 +19,30 @@ limitations under the License.
 """
 
 from resource_management import *
+from resource_management.libraries.functions.default import default
 import status_params
 
+# server configurations
 config = Script.get_config()
 
-security_enabled = config['configurations']['cluster-env']['security_enabled']
-
-# local structure
+# accumulo local directory structure
 log_dir = config['configurations']['accumulo-env']['accumulo_log_dir']
-accumulo_conf_dir = "/etc/accumulo/conf"
-hadoop_bin_dir = format("/usr/hdp/current/hadoop-client/bin")
-daemon_script_start = format('/usr/hdp/current/accumulo-client/bin/start-server.sh')
-daemon_script_stop = format('/usr/hdp/current/accumulo-client/bin/stop-here.sh')
-accumulo_cmd = format('/usr/hdp/current/accumulo-client/bin/accumulo')
+conf_dir = "/etc/accumulo/conf"
+daemon_script = "/usr/hdp/current/accumulo-client/bin/accumulo"
 
-# user things
+# service locations
+hadoop_prefix = "/usr/hdp/current/hadoop-client"
+hadoop_bin_dir = format("{hadoop_prefix}/bin")
+hadoop_conf_dir = "/etc/hadoop/conf"
+zookeeper_home = "/usr/hdp/current/zookeeper-client"
+
+# user and status
 accumulo_user = status_params.accumulo_user
+user_group = config['configurations']['cluster-env']['user_group']
+pid_dir = status_params.pid_dir
 
-#java things
+# accumulo env
 java64_home = config['hostLevelParams']['java_home']
-hadoop_prefix = config['configurations']['accumulo-env']['hadoop_prefix']
-hadoop_conf_dir = config['configurations']['accumulo-env']['hadoop_conf_dir']
-zookeeper_home = config['configurations']['accumulo-env']['zookeeper_home']
 master_heapsize = config['configurations']['accumulo-env']['master_heapsize']
 tserver_heapsize = config['configurations']['accumulo-env']['tserver_heapsize']
 monitor_heapsize = config['configurations']['accumulo-env']['monitor_heapsize']
@@ -48,31 +50,19 @@ gc_heapsize = config['configurations']['accumulo-env']['gc_heapsize']
 other_heapsize = config['configurations']['accumulo-env']['other_heapsize']
 env_sh_template = config['configurations']['accumulo-env']['content']
 
-accumulo_env_sh_template = config['configurations']['accumulo-env']['content']
-zookeeper_host = config['configurations']['accumulo-site']['instance.zookeeper.host']
+# accumulo initialization parameters
+instance_name = config['configurations']['accumulo-env']['accumulo_instance_name']
+root_password = config['configurations']['accumulo-env']['accumulo_root_password']
+instance_volumes = config['configurations']['accumulo-site']['instance.volumes']
+parent_dir = instance_volumes[0:instance_volumes.rfind('/')]
 
-#accumulo initialization parameters
-accumulo_instance_name = "hdp-accumulo-instance"
-accumulo_root_password = config['configurations']['accumulo-site']['trace.token.property.password']
-#accumulo_hdfs_root_dir = config['configurations']['accumulo-site']['instance.volumes']
-accumulo_hdfs_root_dir = "/accumulo"
-accumulo_hdfs_stage_dir = "/user/accumulo"
+#metrics2 properties
+ams_collector_hosts = default("/clusterHostInfo/metric_collector_hosts", [])
+has_metric_collector = not len(ams_collector_hosts) == 0
+if has_metric_collector:
+  metric_collector_host = ams_collector_hosts[0]
 
-accumulo_excluded_hosts = config['commandParams']['excluded_hosts']
-accumulo_included_hosts = config['commandParams']['included_hosts']
-
-# TODO accumulo_ts_hosts is not defined in clusterHostInfo
-# if accumulo is selected the accumulo_ts_hosts, should not be empty, but still default just in case
-#if 'slave_hosts' in config['clusterHostInfo']:
-#  ts_hosts = default('/clusterHostInfo/accumulo_ts_hosts', '/clusterHostInfo/slave_hosts') #if accumulo_ts_hosts not given it is assumed that tservers on same nodes as slaves
-#else:
-#  ts_hosts = default('/clusterHostInfo/accumulo_ts_hosts', '/clusterHostInfo/all_hosts') 
-
-#log4j.properties
-if (('accumulo-log4j' in config['configurations']) and ('content' in config['configurations']['accumulo-log4j'])):
-  log4j_props = config['configurations']['accumulo-log4j']['content']
-else:
-  log4j_props = None
+security_enabled = config['configurations']['cluster-env']['security_enabled']
 
 #for create_hdfs_directory
 hostname = config["hostname"]
@@ -82,7 +72,7 @@ hdfs_principal_name = config['configurations']['hadoop-env']['hdfs_principal_nam
 kinit_path_local = functions.get_kinit_path(["/usr/bin", "/usr/kerberos/bin", "/usr/sbin"])
 import functools
 #create partial functions with common arguments for every HdfsDirectory call
-#to create hdfs directory we need to call params.HdfsDirectory in accumulo.py
+#to create hdfs directory we need to call params.HdfsDirectory in code
 HdfsDirectory = functools.partial(
   HdfsDirectory,
   conf_dir=hadoop_conf_dir,
