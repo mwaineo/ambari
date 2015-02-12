@@ -25,7 +25,25 @@
     <name>accumulo_root_password</name>
     <value></value>
     <property-type>PASSWORD</property-type>
-    <description>Initial password for the Accumulo root user.</description>
+    <description>Password for the Accumulo root user. This password will be
+      used to initialize Accumulo and to create the trace user. Changing this
+      will not change the password for the Accumulo root user.</description>
+  </property>
+  <property require-input="true">
+    <name>instance_secret</name>
+    <value></value>
+    <property-type>PASSWORD</property-type>
+    <description>A secret unique to a given instance that all Accumulo server
+      processes must know in order to communicate with one
+      another.</description>
+  </property>
+  <property require-input="false">
+    <name>trace_password</name>
+    <value>trace</value>
+    <property-type>PASSWORD</property-type>
+    <description>Password for the trace user. The trace user will be created
+      with this password if that user does not already exist. Changing this
+      will not change the password for the trace user.</description>
   </property>
   <property>
     <name>accumulo_log_dir</name>
@@ -75,7 +93,7 @@
   </property>
   <property>
     <name>content</name>
-    <description>This is the template for a client accumulo-env.sh file.</description>
+    <description>The template for a client accumulo-env.sh file.</description>
     <value>
 #! /usr/bin/env bash
 export HADOOP_PREFIX={{hadoop_prefix}}

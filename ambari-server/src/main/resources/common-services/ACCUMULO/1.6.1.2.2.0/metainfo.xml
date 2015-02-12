@@ -58,7 +58,7 @@
           <name>ACCUMULO_MONITOR</name>
           <displayName>Accumulo Monitor</displayName>
           <category>MASTER</category>
-          <cardinality>1</cardinality>
+          <cardinality>1+</cardinality>
           <commandScript>
             <script>scripts/accumulo_monitor.py</script>
             <scriptType>PYTHON</scriptType>
@@ -70,11 +70,22 @@
           <name>ACCUMULO_GC</name>
           <displayName>Accumulo GC</displayName>
           <category>MASTER</category>
-          <cardinality>1</cardinality>
+          <cardinality>1+</cardinality>
           <commandScript>
             <script>scripts/accumulo_gc.py</script>
             <scriptType>PYTHON</scriptType>
             <timeout>600</timeout>
+          </commandScript>
+        </component>
+
+        <component>
+          <name>ACCUMULO_TRACER</name>
+          <displayName>Accumulo Tracer</displayName>
+          <category>MASTER</category>
+          <cardinality>1+</cardinality>
+          <commandScript>
+            <script>scripts/accumulo_tracer.py</script>
+            <scriptType>PYTHON</scriptType>
           </commandScript>
         </component>
 

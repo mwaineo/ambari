@@ -19,6 +19,7 @@ limitations under the License.
 """
 
 from resource_management import *
+import os
 
 def setup_conf_dir(name=None): # 'master' or 'tserver' or 'monitor' or 'gc' or 'tracer' or 'client'
   import params
@@ -39,15 +40,32 @@ def setup_conf_dir(name=None): # 'master' or 'tserver' or 'monitor' or 'gc' or '
        content=InlineTemplate(params.env_sh_template)
   )
 
-  # create a site file for server processes
-  XmlConfig( "accumulo-site.xml",
-            conf_dir = params.conf_dir,
-            configurations = params.config['configurations']['accumulo-site'],
-            configuration_attributes=params.config['configuration_attributes']['accumulo-site'],
-            owner = params.accumulo_user,
-            group = params.user_group,
-            mode = 0600
-  )
+  if name == 'client':
+    # create a site file for client processes
+    # this special client config will be overwritten if a server process is
+    # started on the same node
+    XmlConfig( "accumulo-site.xml",
+              conf_dir = params.conf_dir,
+              configurations = params.config['configurations']['accumulo-site'],
+              configuration_attributes=params.config['configuration_attributes']['accumulo-site'],
+              owner = params.accumulo_user,
+              group = params.user_group,
+              mode = 0600
+    )
+  else:
+    # create a site file for server processes
+    configs = {}
+    configs.update(params.config['configurations']['accumulo-site'])
+    configs["instance.secret"] = params.config['configurations']['accumulo-env']['instance_secret']
+    configs["trace.token.property.password"] = params.trace_password
+    XmlConfig( "accumulo-site.xml",
+               conf_dir = params.conf_dir,
+               configurations = configs,
+               configuration_attributes=params.config['configuration_attributes']['accumulo-site'],
+               owner = params.accumulo_user,
+               group = params.user_group,
+               mode = 0600
+    )
 
   # create pid dir
   Directory( params.pid_dir,
@@ -91,17 +109,71 @@ def setup_conf_dir(name=None): # 'master' or 'tserver' or 'monitor' or 'gc' or '
                          mode=0700
     )
     params.HdfsDirectory(None, action="create")
-    Execute( format("{params.daemon_script} init --instance-name {"
-                    "params.instance_name} --password {params.root_password} "
-                    "--clear-instance-name >{params.log_dir}/accumulo-"
-                    "{params.accumulo_user}-init.out 2>{params.log_dir}/"
-                    "accumulo-{params.accumulo_user}-init.err"),
-             not_if=as_user(format("{params.hadoop_bin_dir}/hadoop --config "
-                                   "{params.hadoop_conf_dir} fs -stat "
-                                   "{params.instance_volumes}"),
-                            params.accumulo_user),
-             user=params.accumulo_user)
+    passfile = format("{params.conf_dir}/pass")
+    try:
+      File(passfile,
+           mode=0600,
+           group=params.user_group,
+           owner=params.accumulo_user,
+           content=InlineTemplate('{{root_password}}\n'
+                                  '{{root_password}}\n')
+      )
+      Execute( format("cat {passfile} | {params.daemon_script} init "
+                      "--instance-name {params.instance_name} "
+                      "--clear-instance-name "
+                      ">{params.log_dir}/accumulo-{params.accumulo_user}-init.out "
+                      "2>{params.log_dir}/accumulo-{params.accumulo_user}-init.err"),
+               not_if=as_user(format("{params.hadoop_bin_dir}/hadoop --config "
+                                     "{params.hadoop_conf_dir} fs -stat "
+                                     "{params.instance_volumes}"),
+                              params.accumulo_user),
+               user=params.accumulo_user)
+    finally:
+      os.remove(passfile)
 
+  if name == 'tracer':
+    rpassfile = format("{params.conf_dir}/pass0")
+    passfile = format("{params.conf_dir}/pass")
+    cmdfile = format("{params.conf_dir}/cmds")
+    try:
+      File(rpassfile,
+           mode=0600,
+           group=params.user_group,
+           owner=params.accumulo_user,
+           content=InlineTemplate('{{root_password}}\n')
+      )
+      File(passfile,
+           mode=0600,
+           group=params.user_group,
+           owner=params.accumulo_user,
+           content=InlineTemplate('{{root_password}}\n'
+                                  '{{trace_password}}\n'
+                                  '{{trace_password}}\n')
+      )
+      File(cmdfile,
+           mode=0600,
+           group=params.user_group,
+           owner=params.accumulo_user,
+           content=InlineTemplate('createuser {{trace_user}}\n'
+                                  'grant -s System.CREATE_TABLE -u {{trace_user}}\n')
+      )
+      Execute( format("cat {passfile} | {params.daemon_script} shell -u root "
+                      "-f {cmdfile}"),
+               not_if=as_user(format("cat {rpassfile} | {params.daemon_script} "
+                                     "shell -u root -e \"userpermissions -u "
+                                     "{params.trace_user}\""),
+                              params.accumulo_user),
+               user=params.accumulo_user)
+    finally:
+      try_remove(rpassfile)
+      try_remove(passfile)
+      try_remove(cmdfile)
+
+def try_remove(file):
+  try:
+    os.remove(file)
+  except:
+    pass
 
 # create file 'name' from template
 def accumulo_TemplateConfig(name,

@@ -61,17 +61,6 @@
     <value>false</value>
   </property>
 
-  <property require-input="true">
-    <name>instance.secret</name>
-    <value></value>
-    <property-type>PASSWORD</property-type>
-    <description>A secret unique to a given instance that all servers must know in order to communicate with one another.
-      Change it before initialization. To
-      change it later use ./bin/accumulo org.apache.accumulo.server.util.ChangeSecret --old [oldpasswd] --new [newpasswd],
-      and then update this file.
-    </description>
-  </property>
-
   <property>
     <name>tserver.memory.maps.max</name>
     <value>80M</value>
@@ -130,6 +119,11 @@
   <property>
     <name>monitor.port.log4j</name>
     <value>4560</value>
+  </property>
+
+  <property>
+    <name>trace.user</name>
+    <value>trace</value>
   </property>
 
   <property>

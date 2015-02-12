@@ -56,6 +56,10 @@ root_password = config['configurations']['accumulo-env']['accumulo_root_password
 instance_volumes = config['configurations']['accumulo-site']['instance.volumes']
 parent_dir = instance_volumes[0:instance_volumes.rfind('/')]
 
+# tracer properties
+trace_user = config['configurations']['accumulo-site']['trace.user']
+trace_password = config['configurations']['accumulo-env']['trace_password']
+
 # metrics2 properties
 ganglia_server_hosts = default('/clusterHostInfo/ganglia_server_host', []) # is not passed when ganglia is not present
 ganglia_server_host = '' if len(ganglia_server_hosts) == 0 else ganglia_server_hosts[0]
