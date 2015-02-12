@@ -19,12 +19,45 @@ limitations under the License.
 """
 
 from resource_management import *
+import os
 
 class AccumuloServiceCheck(Script):
   def service_check(self, env):
     import params
     env.set_params(params)
 
+    rpassfile = format("{exec_tmp_dir}/pass0")
+    cmdfile = format("{exec_tmp_dir}/cmds")
+    try:
+      File(rpassfile,
+           mode=0600,
+           group=params.user_group,
+           owner=params.accumulo_user,
+           content=InlineTemplate('{{root_password}}\n')
+      )
+      File(cmdfile,
+           mode=0600,
+           group=params.user_group,
+           owner=params.accumulo_user,
+           content=InlineTemplate('createtable testtable\n'
+                                  'insert row cf cq val\n'
+                                  'scan\n'
+                                  'flush -w\n'
+                                  'scan\n'
+                                  'deletetable testtable\n')
+      )
+      Execute( format("cat {rpassfile} | {daemon_script} shell -u root "
+                      "-f {cmdfile}"),
+               user=params.accumulo_user)
+    finally:
+      try_remove(rpassfile)
+      try_remove(cmdfile)
+
+def try_remove(file):
+  try:
+    os.remove(file)
+  except:
+    pass
 
 if __name__ == "__main__":
   AccumuloServiceCheck().execute()

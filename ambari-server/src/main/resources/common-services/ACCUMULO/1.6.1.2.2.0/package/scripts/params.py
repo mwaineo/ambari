@@ -24,6 +24,7 @@ import status_params
 
 # server configurations
 config = Script.get_config()
+exec_tmp_dir = Script.get_tmp_dir()
 
 # accumulo local directory structure
 log_dir = config['configurations']['accumulo-env']['accumulo_log_dir']
