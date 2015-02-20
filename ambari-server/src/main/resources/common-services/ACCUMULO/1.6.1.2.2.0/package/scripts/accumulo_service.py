@@ -19,6 +19,7 @@ limitations under the License.
 """
 
 from resource_management import *
+import time
 
 def accumulo_service( name,
                       action = 'start'): # 'start' or 'stop' or 'status'
@@ -38,6 +39,26 @@ def accumulo_service( name,
 
     elif action == 'stop':
       no_pid_exists = format("! ({pid_exists})")
+      try:
+        if name == 'master':
+          Execute(format("{daemon_script} admin stopMaster"),
+                  not_if=no_pid_exists,
+                  user=params.accumulo_user
+          )
+          Execute(format("{daemon_script} org.apache.accumulo.server.util.ZooZap -master -tservers -tracers --site-file {conf_dir}/accumulo-site.xml"),
+                  not_if=no_pid_exists,
+                  user=params.accumulo_user
+          )
+        elif name == 'tserver':
+          Execute(format("{daemon_script} admin stop {hostname}"),
+                  not_if=no_pid_exists,
+                  user=params.accumulo_user
+          )
+      except:
+        pass
+
+      time.sleep(5)
+
       pid = format("`cat {pid_file}` >/dev/null 2>&1")
       Execute(format("kill {pid}"),
         not_if=no_pid_exists,
